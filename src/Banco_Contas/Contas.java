@@ -1,9 +1,9 @@
-package Conta;
+package Banco_Contas;
 
 public class Contas {
     private Integer numero;
     private String titular;
-    private double balance;
+    protected double balance;
 
     public Contas(){}
 
