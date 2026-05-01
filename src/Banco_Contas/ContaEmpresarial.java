@@ -24,8 +24,12 @@ public final class  ContaEmpresarial extends Contas{
 
     @Override
     public void Saque(double valor) {
+        if (valor <= balance){
         double saque = valor + 6.00;
-        balance -= saque;
+        balance -= saque;}
+        else {
+            System.out.println("Saldo invalido");
+        }
     }
 
     @Override

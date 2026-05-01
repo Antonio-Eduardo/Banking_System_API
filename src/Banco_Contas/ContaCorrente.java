@@ -8,8 +8,12 @@ public class ContaCorrente extends Contas{
     }
     @Override
     public void Saque(double valor) {
+        if (valor <= balance){
         double taxa = valor +3.00;
-        balance -= taxa;
+        balance -= taxa;}
+        else {
+            System.out.println("Saldo invalido");
+        }
     }
     @Override
     public void Depositar(double valor){
