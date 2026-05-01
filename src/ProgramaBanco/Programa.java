@@ -4,12 +4,12 @@ import Banco_Contas.ContaEmpresarial;
 import Banco_Contas.ContaPoupanca;
 import Banco_Contas.Contas;
 
+import java.util.List;
+
 public class Programa {
     public static void main(String[] args) {
 
         Contas tudo = new Contas();
-        ContaEmpresarial contasEmpresa = new ContaEmpresarial();
-        ContaPoupanca contaPoupancas = new ContaPoupanca();
         Contas acc1 = new Contas("Eduardo", 1001, 0.0);
         ContaEmpresarial acc2 = new ContaEmpresarial("Lorena", 1002, 0.0, 500.0);
         Contas acc3 = new ContaEmpresarial("Bob", 1004, 0.0, 200.0);
@@ -30,21 +30,21 @@ public class Programa {
         tudo.addConta(acc8);
         tudo.addConta(acc9);
 
-        for (Contas x : tudo.getTodasContas()) {
-            if (x instanceof ContaEmpresarial) {
-                contasEmpresa.addEmpresa((ContaEmpresarial) x);
-            }
-            if (x instanceof ContaPoupanca) {
-                contaPoupancas.addPoupancaa((ContaPoupanca) x);
-            }
-        }
-        for (Contas x : contasEmpresa.getContasEmpresa()){
-            System.out.printf("%s %d %.2f%n",x.getTitular(),x.getNumero(),x.getBalance());
+        List<ContaEmpresarial> soEmpresas = tudo.getEmpresas();
+        List<ContaPoupanca> soPoupancas = tudo.getPoupancas();
+        System.out.println("-----Todas as Contas-----");
+        for (Contas c : tudo.getContas()){
+            System.out.printf("Nome: %s | Identificacao: %d | Saldo: %.2f%n",c.getTitular(),c.getNumero(),c.getBalance());
         }
         System.out.println();
-
-        for (Contas x : contaPoupancas.getContasPoupanca()){
-            System.out.printf("%s %d %.2f%n",x.getTitular(),x.getNumero(),x.getBalance());
+        System.out.println("-----Empresas-----");
+        for (ContaEmpresarial c : soEmpresas){
+            System.out.printf("Empresa: %s | Identificacao: %d | Saldo: %.2f | Emprestimo: %.2f%n",c.getTitular(),c.getNumero(),c.getBalance(),c.getEmprestimo());
+        }
+        System.out.println();
+        System.out.println("-----Contas Poupanças-----");
+        for (ContaPoupanca c : soPoupancas){
+            System.out.printf("Titular: %s | Identificacao: %d | Saldo: %.2f | Juros: %.2f%n",c.getTitular(),c.getNumero(),c.getBalance(),c.getJuros());
         }
     }
 }
