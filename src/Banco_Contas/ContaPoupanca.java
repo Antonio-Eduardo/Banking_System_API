@@ -2,38 +2,48 @@ package Banco_Contas;
 
 import java.util.List;
 
-public final class ContaPoupanca extends Contas{
-    private double juros;
+public final class ContaPoupanca extends Contas {
+    private static final double TAXA_JUROS = 1.1;
 
-    public ContaPoupanca(){
+    public ContaPoupanca() {
         super();
     }
 
-    public ContaPoupanca(String titular, Integer numero, double balance, double juros) {
+    public ContaPoupanca(String titular, Integer numero, double balance) {
         super(titular, numero, balance);
-        this.juros = juros;
+
     }
-    public void JurosValor(){
-        balance += balance * juros;
+
+    public double rendimentoTotal() {
+       return balance *= TAXA_JUROS;
+    }
+
+    public double attSaldo(){
+        return balance *= TAXA_JUROS;
     }
 
     public double getJuros() {
-        return juros;
+        return TAXA_JUROS;
     }
-@Override
+
+    @Override
 
     public void Saque(double valor) {
-    balance -= valor;
-}
+        balance -= valor;
+    }
+    @Override
+    public void Depositar(double valor){
+        balance += valor;
+    }
 
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Contas Poupanca{");
+        final StringBuilder sb = new StringBuilder("Contas [Poupanca] {");
         sb.append("titular='").append(getTitular()).append('\'');
         sb.append(", numero=").append(getNumero());
-        sb.append(", balance=").append(getBalance());
-        sb.append(" Juros=").append(juros);
+        sb.append(", saldo=").append(getBalance());
+        sb.append(", rendimento previsto=").append(balance * TAXA_JUROS);
         sb.append('}');
         return sb.toString();
     }

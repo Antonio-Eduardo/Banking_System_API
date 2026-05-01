@@ -3,7 +3,7 @@ package Banco_Contas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Contas {
+public abstract class Contas {
     private Integer numero;
     private String titular;
     protected double balance;
@@ -17,17 +17,9 @@ public class Contas {
         this.balance = balance;
     }
 
-    public void Depositar(double deposito) {
-        balance += deposito;
-    }
+    public abstract void Depositar(double deposito);
 
-    public void Saque(double saque) {
-        if (saque <= balance) {
-            balance -= saque + 5.0;
-        } else {
-            System.out.println("Saldo insuficiente !");
-        }
-    }
+    public abstract void Saque(double saque);
 
     public double getBalance() {
         return balance;
@@ -41,18 +33,11 @@ public class Contas {
         return titular;
     }
 
-    public void setTitular(String titular) {
-        this.titular = titular;
-    }
-
-
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Contas{");
-        sb.append("titular='").append(titular).append('\'');
+        final StringBuilder sb = new StringBuilder("titular='").append(titular).append('\'');
         sb.append(", numero=").append(numero);
         sb.append(", balance=").append(balance);
-        sb.append('}');
         return sb.toString();
     }
 }

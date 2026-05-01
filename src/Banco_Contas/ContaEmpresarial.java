@@ -13,7 +13,7 @@ public final class  ContaEmpresarial extends Contas{
         super(titular, numero, balance);
         this.emprestimo = emprestimo;
     }
-    public void Emprestimo(double valor){
+    public void addEmprestimo(double valor){
         emprestimo += valor;
     }
 
@@ -24,16 +24,19 @@ public final class  ContaEmpresarial extends Contas{
 
     @Override
     public void Saque(double valor) {
-        super.Saque(valor);
-        balance -= 2.0;
+        double saque = valor + 6.00;
+        balance -= saque;
+    }
+
+    @Override
+    public void Depositar(double valor){
+        balance += valor;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Contas Empresa{");
-        sb.append("titular='").append(getTitular()).append('\'');
-        sb.append(", numero=").append(getNumero());
-        sb.append(", balance=").append(getBalance());
+        final StringBuilder sb = new StringBuilder("Conta [Empresa] {");
+        sb.append(super.toString());
         sb.append(" emprestimo=").append(emprestimo);
         sb.append('}');
         return sb.toString();

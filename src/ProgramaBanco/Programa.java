@@ -1,5 +1,6 @@
 package ProgramaBanco;
 
+import Banco_Contas.ContaCorrente;
 import Banco_Contas.ContaEmpresarial;
 import Banco_Contas.ContaPoupanca;
 import Banco_Contas.Contas;
@@ -32,7 +33,7 @@ public class Programa {
                     sc.nextLine();
                     System.out.println("Saldo inicial : 0,00");
                     double saldo = 0.00;
-                    Contas accCorrente = new Contas(nome,numero,saldo);
+                    Contas accCorrente = new ContaCorrente(nome,numero,saldo);
                     todasContas.add(accCorrente);
                     limite++;
                     break;
@@ -58,9 +59,7 @@ public class Programa {
                     sc.nextLine();
                     System.out.println("Saldo inicial : 0,00");
                     double saldoPoup = 0.00;
-                    System.out.print("Emprestimo inicial: ");
-                    double juros = sc.nextDouble();
-                    Contas accPoup = new ContaPoupanca(nomePoup,numeroPoup,saldoPoup,juros);
+                    Contas accPoup = new ContaPoupanca(nomePoup,numeroPoup,saldoPoup);
                     todasContas.add(accPoup);
                     limite++;
                     break;
@@ -71,7 +70,39 @@ public class Programa {
         for (Contas f : todasContas){
             System.out.println(f);
         }
+        int opcao2;
+        do {
+            System.out.println("1-Deposito | 2-Saque | 3-sair");
+            opcao2 = sc.nextInt();
+            sc.nextLine();
 
+            System.out.println("Digite o numero da conta que deseja realizar o deposito: ");
+            int numeroConta = sc.nextInt();
+            sc.nextLine();
+            Contas procura = todasContas.stream().filter(c -> c.getNumero().equals(numeroConta)).findFirst().orElse(null);
 
+            if (procura == null) {
+                System.out.println("numero invalido;");
+                opcao2 = 0;
+            } else {
+                switch (opcao2) {
+                    case 1:
+                        System.out.println("Ola " + procura.getTitular() + " digite o valor a ser depositado");
+                        double valorDep = sc.nextDouble();
+                        procura.Depositar(valorDep);
+                        break;
+                    case 2:
+                        System.out.println("Ola " + procura.getTitular() + " digite o valor a ser sacado");
+                        double valorSaq = sc.nextDouble();
+                        procura.Saque(valorSaq);
+                        break;
+                    case 3:
+                        break;
+                }
+            }
+        }while (opcao2 != 3) ;
+        for (Contas f : todasContas){
+            System.out.println(f);
+        }
     }
 }
