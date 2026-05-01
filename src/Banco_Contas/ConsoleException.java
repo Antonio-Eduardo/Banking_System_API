@@ -35,7 +35,7 @@ public class ConsoleException {
         }
     }
     public static String lerMensagem(Scanner sc, String mensagem){
-        System.out.println(mensagem);
+        System.out.print(mensagem);
         return sc.nextLine();
     }
 }

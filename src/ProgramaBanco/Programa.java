@@ -16,12 +16,12 @@ public class Programa {
         int limite = 0;
         int opcao;
         while (limite < quantidade) {
-            opcao = ConsoleException.lerInteiros(sc, "Selecione o tipo de conta (1-Conta corrente|2-Conta empresarial|3-Conta poupanca)");
+            opcao = ConsoleException.lerInteiros(sc, "Selecione o tipo de conta (1-Conta corrente|2-Conta empresarial|3-Conta poupanca)\n");
             switch (opcao) {
                 case 1:
                     String nome = ConsoleException.lerMensagem(sc,"Nome titular: ");
                     int numero = ConsoleException.lerInteiros(sc, "iD da conta:");
-                    System.out.println("Saldo inicial : 0,00");
+                    System.out.println("Saldo inicial: 0,00");
                     double saldo = 0.00;
                     Contas accCorrente = new ContaCorrente(nome, numero, saldo);
                     todasContas.add(accCorrente);
@@ -63,16 +63,16 @@ public class Programa {
             Contas procura = todasContas.stream().filter(c -> c.getNumero().equals(numeroConta)).findFirst().orElse(null);
 
             if (procura == null) {
-                System.out.println("numero invalido;");
+                System.out.println("numero invalido");
                 opcao2 = 0;
             } else {
                 switch (opcao2) {
                     case 1:
-                        double valorDep = ConsoleException.lerDouble(sc, "Ola " + procura.getTitular() + " digite o valor a ser depositado");
+                        double valorDep = ConsoleException.lerDouble(sc, "Ola " + procura.getTitular() + " digite o valor a ser depositado: ");
                         procura.Depositar(valorDep);
                         break;
                     case 2:
-                        double valorSaq = ConsoleException.lerDouble(sc, "Ola " + procura.getTitular() + " digite o valor a ser sacado");
+                        double valorSaq = ConsoleException.lerDouble(sc, "Ola " + procura.getTitular() + " digite o valor a ser sacado: ");
                         procura.Saque(valorSaq);
                         break;
                     case 3:
