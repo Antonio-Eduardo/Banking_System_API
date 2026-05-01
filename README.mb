@@ -1,4 +1,4 @@
-Sistema de Gerenciamento Bancário (Java OOP)
+Sistema de Gerenciamento Bancário para pratica de poo
 
 Esse é um projeto desenvolvido para consolidar conceitos fundamentais de POO e Java Streams, simulando o funcionamento interno de diferentes tipos de contas bancárias.
 Funcionalidades:
@@ -6,4 +6,6 @@ Cadastro Dinâmico: Registro de múltiplos tipos de contas (Corrente, Poupança 
 Polimorfismo de Saque: Cada tipo de conta possui sua própria regra de tributação/taxa.
 Validação de Saldo: Verificação de fundos antes de permitir operações de saque.
 Busca Otimizada: Localização de contas específicas utilizando Java Streams e Predicates.
+//updated :
+Classe ConsoleException: centralizei a leitura de dados para evitar que o programa feche ao digitar letras em campos de números (uso de try-catch).
 
