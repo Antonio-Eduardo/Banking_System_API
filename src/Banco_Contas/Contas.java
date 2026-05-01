@@ -1,9 +1,13 @@
 package Banco_Contas;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Contas {
     private Integer numero;
     private String titular;
     protected double balance;
+    List<Contas> todasContas = new ArrayList<>();
 
     public Contas(){}
 
@@ -18,7 +22,7 @@ public class Contas {
     }
     public void Saque(double saque){
         if (saque <= balance){
-            balance -= saque;
+            balance -= saque + 5.0;
         } else{
             System.out.println("Saldo insuficiente !");
         }
@@ -42,5 +46,30 @@ public class Contas {
 
     public void setTitular(String titular) {
         this.titular = titular;
+    }
+
+    public void addConta(Contas conta){
+        todasContas.add(conta);
+    }
+    public void removeConta(Contas conta){
+        todasContas.remove(conta);
+    }
+
+    public List<Contas> getTodasContas() {
+        return todasContas;
+    }
+
+    public void setTodasContas(List<Contas> todasContas) {
+        this.todasContas = todasContas;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Contas{");
+        sb.append("titular='").append(titular).append('\'');
+        sb.append(", numero=").append(numero);
+        sb.append(", balance=").append(balance);
+        sb.append('}');
+        return sb.toString();
     }
 }
