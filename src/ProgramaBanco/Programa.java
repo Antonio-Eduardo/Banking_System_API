@@ -1,84 +1,65 @@
 package ProgramaBanco;
 
-import Banco_Contas.ContaCorrente;
-import Banco_Contas.ContaEmpresarial;
-import Banco_Contas.ContaPoupanca;
-import Banco_Contas.Contas;
+import Banco_Contas.*;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Programa {
     public static void main(String[] args) {
         List<Contas> todasContas = new ArrayList<>();
-
         Scanner sc = new Scanner(System.in);
-        System.out.print("Quantidade de contas a serem registradas: ");
-        int quantidade = sc.nextInt();
+        final int quantidade = ConsoleException.lerInteiros(sc, "quantidade de cadastros: ");
         int limite = 0;
-        sc.nextLine();
         int opcao;
-        do {
-            System.out.println("Selecione o tipo de conta (1-Conta corrente|2-Conta empresarial|3-Conta poupanca)");
-            opcao = sc.nextInt();
-            sc.nextLine();
-            switch(opcao){
+        while (limite < quantidade) {
+            opcao = ConsoleException.lerInteiros(sc, "Selecione o tipo de conta (1-Conta corrente|2-Conta empresarial|3-Conta poupanca)");
+            switch (opcao) {
                 case 1:
-                    System.out.print("Nome do titular: ");
-                    String nome = sc.nextLine();
-                    System.out.print("iD da conta: ");
-                    int numero = sc.nextInt();
-                    sc.nextLine();
+                    String nome = ConsoleException.lerMensagem(sc,"Nome titular: ");
+                    int numero = ConsoleException.lerInteiros(sc, "iD da conta:");
                     System.out.println("Saldo inicial : 0,00");
                     double saldo = 0.00;
-                    Contas accCorrente = new ContaCorrente(nome,numero,saldo);
+                    Contas accCorrente = new ContaCorrente(nome, numero, saldo);
                     todasContas.add(accCorrente);
                     limite++;
                     break;
                 case 2:
-                    System.out.print("Nome do titular: ");
-                    String nomeEmp = sc.nextLine();
-                    System.out.print("iD da conta: ");
-                    int numeroEmp = sc.nextInt();
-                    sc.nextLine();
+                    String nomeEmp = ConsoleException.lerMensagem(sc,"Nome do titular: ");
+                    int numeroEmp = ConsoleException.lerInteiros(sc, "iD da conta: ");
                     System.out.println("Saldo inicial : 0,00");
                     double saldoEmp = 0.00;
-                    System.out.print("Emprestimo inicial: ");
-                    double emprestimo = sc.nextDouble();
-                    Contas accEmp = new ContaEmpresarial(nomeEmp,numeroEmp,saldoEmp,emprestimo);
+                    double emprestimo = ConsoleException.lerDouble(sc, "Emprestimo inicial: ");
+                    Contas accEmp = new ContaEmpresarial(nomeEmp, numeroEmp, saldoEmp, emprestimo);
                     todasContas.add(accEmp);
                     limite++;
                     break;
                 case 3:
-                    System.out.print("Nome do titular: ");
-                    String nomePoup = sc.nextLine();
-                    System.out.print("iD da conta: ");
-                    int numeroPoup = sc.nextInt();
-                    sc.nextLine();
+                    String nomePoup = ConsoleException.lerMensagem(sc,"Nome do titular: ");
+                    int numeroPoup = ConsoleException.lerInteiros(sc, "iD da conta: ");
                     System.out.println("Saldo inicial : 0,00");
                     double saldoPoup = 0.00;
-                    Contas accPoup = new ContaPoupanca(nomePoup,numeroPoup,saldoPoup);
+                    Contas accPoup = new ContaPoupanca(nomePoup, numeroPoup, saldoPoup);
                     todasContas.add(accPoup);
                     limite++;
                     break;
             }
-        }while (limite < quantidade);
-
-
-        for (Contas f : todasContas){
+        }
+        for (Contas f : todasContas) {
             System.out.println(f);
         }
-        int opcao2;
-        do {
+        int opcao2 = 0;
+
+        while (opcao2 != 3 && quantidade > 0) {
             System.out.println("1-Deposito | 2-Saque | 3-sair");
             opcao2 = sc.nextInt();
             sc.nextLine();
+            if (opcao2 == 3) break;
 
-            System.out.println("Digite o numero da conta que deseja realizar o deposito: ");
-            int numeroConta = sc.nextInt();
-            sc.nextLine();
+            int numeroConta = ConsoleException.lerInteiros(sc, "Digite o numero da conta que deseja realizar o deposito: ");
             Contas procura = todasContas.stream().filter(c -> c.getNumero().equals(numeroConta)).findFirst().orElse(null);
 
             if (procura == null) {
@@ -87,21 +68,19 @@ public class Programa {
             } else {
                 switch (opcao2) {
                     case 1:
-                        System.out.println("Ola " + procura.getTitular() + " digite o valor a ser depositado");
-                        double valorDep = sc.nextDouble();
+                        double valorDep = ConsoleException.lerDouble(sc, "Ola " + procura.getTitular() + " digite o valor a ser depositado");
                         procura.Depositar(valorDep);
                         break;
                     case 2:
-                        System.out.println("Ola " + procura.getTitular() + " digite o valor a ser sacado");
-                        double valorSaq = sc.nextDouble();
+                        double valorSaq = ConsoleException.lerDouble(sc, "Ola " + procura.getTitular() + " digite o valor a ser sacado");
                         procura.Saque(valorSaq);
                         break;
                     case 3:
                         break;
                 }
             }
-        }while (opcao2 != 3) ;
-        for (Contas f : todasContas){
+        }
+        for (Contas f : todasContas) {
             System.out.println(f);
         }
     }
