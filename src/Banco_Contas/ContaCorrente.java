@@ -3,6 +3,8 @@ package Banco_Contas;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
 
+import java.util.Scanner;
+
 public class ContaCorrente extends Contas {
     public ContaCorrente() {
         super();
@@ -21,7 +23,6 @@ public class ContaCorrente extends Contas {
             throw new SaldoInsuficienteException();
         }
     }
-
     @Override
     public void Depositar(double valor) {
         if (valor <= 10000) {
@@ -30,7 +31,6 @@ public class ContaCorrente extends Contas {
             throw new LimiteExcedidoException();
         }
     }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Conta [Corrente] {");

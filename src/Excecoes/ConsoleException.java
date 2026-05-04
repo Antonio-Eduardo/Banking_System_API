@@ -34,17 +34,25 @@ public class ConsoleException {
             }
         }
     }
-    public static String lerMensagem(Scanner sc, String mensagem){
-        System.out.print(mensagem);
-        String mensagemEn = sc.nextLine();
-        if (mensagemEn.matches(".*\\d*")){
-            System.out.println("Erro: O nome nao pode conter numeros");
-        } else if (mensagemEn.trim().isEmpty()) {
-            System.out.println("Erro: O nome nao pode estar vazio");
+    public static String lerString(Scanner sc, String mensagem) {
+        while (true) {
+            try {
+                System.out.print(mensagem);
+                String entrada = sc.nextLine();
+                if (entrada.matches(".*\\d*")) {
+                    throw new IllegalArgumentException("Erro: O nome so pode contar letras.");
+                } else if (entrada.trim().isEmpty()) {
+                    throw new IllegalArgumentException(("O nome não pode ser vazio."));
+                } else {
+                    return entrada;
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Nome Invalido! " + e.getMessage());
+            }
         }
-        return mensagemEn;
     }
 }
+
 
 
 

@@ -2,6 +2,7 @@ package Banco_Contas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class Contas {
     private Integer numero;

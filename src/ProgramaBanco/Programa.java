@@ -17,7 +17,7 @@ public class Programa {
         int limite = 0;
         int opcao;
         while (limite < quantidade) {
-            String nome = ConsoleException.lerMensagem(sc,"Nome titular: ");
+            String nome = ConsoleException.lerString(sc,"Nome titular: ");
             int numero = ConsoleException.lerInteiros(sc, "iD da conta:");
             double depositoInicial = ConsoleException.lerDouble(sc, "Realize um deposito iniciaL: ");
             opcao = ConsoleException.lerInteiros(sc, "Selecione o tipo de conta (1-Conta corrente|2-Conta empresarial|3-Conta poupanca)\n");
