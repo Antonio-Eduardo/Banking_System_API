@@ -17,36 +17,36 @@ public class Programa {
         int limite = 0;
         int opcao;
         while (limite < quantidade) {
+            String nome = ConsoleException.lerMensagem(sc,"Nome titular: ");
+            int numero = ConsoleException.lerInteiros(sc, "iD da conta:");
+            double depositoInicial = ConsoleException.lerDouble(sc, "Realize um deposito iniciaL: ");
             opcao = ConsoleException.lerInteiros(sc, "Selecione o tipo de conta (1-Conta corrente|2-Conta empresarial|3-Conta poupanca)\n");
             switch (opcao) {
                 case 1:
-                    String nome = ConsoleException.lerMensagem(sc,"Nome titular: ");
-                    int numero = ConsoleException.lerInteiros(sc, "iD da conta:");
-                    System.out.println("Saldo inicial: 0,00");
-                    double saldo = 0.00;
-                    Contas accCorrente = new ContaCorrente(nome, numero, saldo);
-                    todasContas.add(accCorrente);
+                    NegocioException.executar(() -> {
+                                Contas accCorrente = new ContaCorrente(nome, numero, depositoInicial);
+                                todasContas.add(accCorrente);
+                            });
                     limite++;
+
                     break;
                 case 2:
-                    String nomeEmp = ConsoleException.lerMensagem(sc,"Nome do titular: ");
-                    int numeroEmp = ConsoleException.lerInteiros(sc, "iD da conta: ");
-                    System.out.println("Saldo inicial : 0,00");
-                    double saldoEmp = 0.00;
                     double emprestimo = ConsoleException.lerDouble(sc, "Emprestimo inicial: ");
-                    Contas accEmp = new ContaEmpresarial(nomeEmp, numeroEmp, saldoEmp, emprestimo);
-                    todasContas.add(accEmp);
+                    NegocioException.executar(() -> {
+                                Contas accEmp = new ContaEmpresarial(nome, numero, depositoInicial, emprestimo);
+                                todasContas.add(accEmp);
+                            });
                     limite++;
                     break;
                 case 3:
-                    String nomePoup = ConsoleException.lerMensagem(sc,"Nome do titular: ");
-                    int numeroPoup = ConsoleException.lerInteiros(sc, "iD da conta: ");
-                    System.out.println("Saldo inicial : 0,00");
-                    double saldoPoup = 0.00;
-                    Contas accPoup = new ContaPoupanca(nomePoup, numeroPoup, saldoPoup);
-                    todasContas.add(accPoup);
+                    NegocioException.executar(() -> {
+                                Contas accPoup = new ContaPoupanca(nome, numero, depositoInicial);
+                                todasContas.add(accPoup);
+                            });
                     limite++;
                     break;
+                default:
+                    System.out.println("Opção inválida! tente novamente");
             }
         }
         for (Contas f : todasContas) {

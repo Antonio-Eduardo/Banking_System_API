@@ -9,7 +9,7 @@ Busca Otimizada: Localização de contas específicas utilizando Java Streams e 
 
 //updated : centralizei a leitura de dados para evitar que o programa feche ao digitar letras em campos de números (uso de try-catch).
 //updated : Implementação de exceções customizadas (SaldoInsuficienteException) e (LimiteExcedidoException)
-            Refatoração para classes abstratas e uso de Enums para códigos de erro
+            Uso de Enums para códigos de erro
             Uso de expressões Lambda e Wrappers para centralizar a lógica de negócio
 
 

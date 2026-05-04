@@ -36,7 +36,13 @@ public class ConsoleException {
     }
     public static String lerMensagem(Scanner sc, String mensagem){
         System.out.print(mensagem);
-        return sc.nextLine();
+        String mensagemEn = sc.nextLine();
+        if (mensagemEn.matches(".*\\d*")){
+            System.out.println("Erro: O nome nao pode conter numeros");
+        } else if (mensagemEn.trim().isEmpty()) {
+            System.out.println("Erro: O nome nao pode estar vazio");
+        }
+        return mensagemEn;
     }
 }
 
