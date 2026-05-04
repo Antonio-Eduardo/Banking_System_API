@@ -39,7 +39,7 @@ public class ConsoleException {
             try {
                 System.out.print(mensagem);
                 String entrada = sc.nextLine();
-                if (entrada.matches(".*\\d*")) {
+                if (entrada.matches(".*\\d.*")) {
                     throw new IllegalArgumentException("Erro: O nome so pode contar letras.");
                 } else if (entrada.trim().isEmpty()) {
                     throw new IllegalArgumentException(("O nome não pode ser vazio."));

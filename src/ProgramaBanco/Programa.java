@@ -1,10 +1,10 @@
 package ProgramaBanco;
-
 import Banco_Contas.*;
 import Excecoes.ConsoleException;
 import Excecoes.NegocioException;
-import Excecoes.ValidacaoException;
-
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -28,7 +28,6 @@ public class Programa {
                                 todasContas.add(accCorrente);
                             });
                     limite++;
-
                     break;
                 case 2:
                     double emprestimo = ConsoleException.lerDouble(sc, "Emprestimo inicial: ");
@@ -58,7 +57,9 @@ public class Programa {
             System.out.println("1-Deposito | 2-Saque | 3-sair");
             opcao2 = sc.nextInt();
             sc.nextLine();
-
+            if (opcao2 == 3){
+                break;
+            }
             int numeroConta = ConsoleException.lerInteiros(sc, "Digite o numero da conta que deseja realizar o deposito: ");
             Contas procura = todasContas.stream().filter(c -> c.getNumero().equals(numeroConta)).findFirst().orElse(null);
 
@@ -75,10 +76,19 @@ public class Programa {
                         double valorSaq = ConsoleException.lerDouble(sc, "Ola " + procura.getTitular() + " digite o valor a ser sacado: ");
                         NegocioException.executar(() -> procura.Saque(valorSaq));
                         break;
-                    case 3:
+                    default:
+                        System.out.println("numero invalido tente novamente!");
                         break;
                 }
             }
+        } String path = "C:\\temp\\bancoTeste.txt";
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+            for (Contas f : todasContas){
+                bw.write(String.valueOf(f));
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         for (Contas f : todasContas) {
             System.out.println(f);
