@@ -1,7 +1,8 @@
 package ProgramaBanco;
 
-import BancoServicos.DepSaqService;
+import BancoServicos.SistemaOperacaoBanco;
 import Banco_Contas.*;
+import ENUM.TipoOperacao;
 import Excecoes.ConsoleException;
 import Excecoes.NegocioException;
 import java.io.BufferedWriter;
@@ -28,6 +29,7 @@ public class Programa {
                     NegocioException.executar(() -> {
                         Contas accCorrente = new ContaCorrente(nome, numero, depositoInicial);
                         todasContas.add(accCorrente);
+
                     });
                     limite++;
                     break;
@@ -70,8 +72,8 @@ public class Programa {
                         break;
                     } else {
                         double valorDep = ConsoleException.lerDouble(sc, "Ola " + procuraDep.getTitular() + " digite o valor a ser depositado: ");
-                        DepSaqService service = new DepSaqService(valorDep);
-                        NegocioException.executar(() -> service.processDeposito(procuraDep));
+                        SistemaOperacaoBanco service = new SistemaOperacaoBanco(valorDep);
+                        NegocioException.executar(() -> service.processDeposito(procuraDep,valorDep));
                         break;
                     }
                 case 2:
@@ -84,8 +86,8 @@ public class Programa {
                         break;
                     } else {
                         double valorSaq = ConsoleException.lerDouble(sc, "Ola " + procuraSaq.getTitular() + " digite o valor a ser sacado: ");
-                        DepSaqService service = new DepSaqService(valorSaq);
-                        NegocioException.executar(() -> service.processSaque(procuraSaq));
+                        SistemaOperacaoBanco service = new SistemaOperacaoBanco(valorSaq);
+                        NegocioException.executar(() -> service.processSaque(procuraSaq,valorSaq));
                         break;
                     }
                 case 3:

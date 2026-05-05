@@ -4,33 +4,19 @@ import Banco_Contas.*;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
 
-public class DepSaqService {
+public class SistemaOperacaoBanco {
     private ServicoTaxaConta tax;
     private double amount;
 
-    public DepSaqService(double amount) {
+    public SistemaOperacaoBanco(double amount) {
         this.amount = amount;
         this.tax = new ServicoTaxaConta();
     }
-    public void processDeposito(Contas conta){
-        double valorFinal = amount - buscarTaxa(conta);
-        double saldoAtualizado = conta.getBalance() + valorFinal;
-        if (saldoAtualizado <= 10000) {
-            conta.setBalance(saldoAtualizado);
-        } else {
-            System.out.println("SALDO: " + conta.getBalance());
-            throw new LimiteExcedidoException();
-        }
+    public void processDeposito(Contas conta, double valor){
+       conta.deposito(valor);
     }
-    public void processSaque(Contas conta){
-        double valorFinal = amount + buscarTaxa(conta);
-        double saldoAtualizado = conta.getBalance() - valorFinal;
-        if (saldoAtualizado >= 0.0) {
-            conta.setBalance(saldoAtualizado);
-        }else {
-            System.out.println("SALDO: " + conta.getBalance());
-            throw new SaldoInsuficienteException();
-        }
+    public void processSaque(Contas conta, double valor){
+        conta.sacar(valor);
     }
     private double buscarTaxa(Contas conta){
         if (conta instanceof ContaCorrente){return tax.taxaCorrente();}

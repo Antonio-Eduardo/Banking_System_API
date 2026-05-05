@@ -1,15 +1,79 @@
-Sistema de Gerenciamento Bancário para pratica de poo
+# Sistema Bancário em Java
 
-Esse é um projeto desenvolvido para consolidar conceitos fundamentais de POO e Java Streams, simulando o funcionamento interno de diferentes tipos de contas bancárias.
-Funcionalidades:
-Cadastro Dinâmico: Registro de múltiplos tipos de contas (Corrente, Poupança e Empresarial).
-Polimorfismo de Saque: Cada tipo de conta possui sua própria regra de tributação/taxa.
-Validação de Saldo: Verificação de fundos antes de permitir operações de saque.
-Busca Otimizada: Localização de contas específicas utilizando Java Streams e Predicates.
+Este projeto consiste em um sistema bancário desenvolvido em Java, com foco na aplicação de Programação Orientada a Objetos (POO), separação de responsabilidades e simulação de operações reais de contas bancárias.
 
-//updated : centralizei a leitura de dados para evitar que o programa feche ao digitar letras em campos de números (uso de try-catch).
-//updated : Implementação de exceções customizadas (SaldoInsuficienteException) e (LimiteExcedidoException)
-            Uso de Enums para códigos de erro
-            Uso de expressões Lambda e Wrappers para centralizar a lógica de negócio
+## Funcionalidades
 
+Criação de contas bancárias:
 
+  * Conta Corrente
+  * Conta Empresarial
+  * Conta Poupança
+
+Operações financeiras:
+
+  * Depósito
+  * Saque
+
+Aplicação de regras específicas por tipo de conta:
+
+  * Taxas de operação
+  * Limites de saque e depósito
+  * Controle de saldo
+
+Registro de histórico de transações:
+
+  * Cada operação gera uma transação
+  * Armazena tipo da operação, valor e saldo após a operação
+
+Tratamento de exceções:
+
+  * Saldo insuficiente
+  * Limite excedido
+  * Validação de entrada de dados
+
+* Exportação de dados:
+
+  * Salvamento das contas e operações em arquivo `.txt`
+
+## Estrutura do Projeto
+
+O projeto foi organizado em camadas pensando sempre nas boas praticas de um desenvolvedor:
+
+* Banco_Contas: classes de domínio (Conta, ContaCorrente, ContaEmpresarial, ContaPoupanca)
+* BancoServicos: serviços responsáveis por operações bancárias
+* ENUM: tipos de operação
+* Excecoes: tratamento de erros e validações
+* ProgramaBanco: classe principal (interface via console)
+
+os conceitos que apliquei nesse projeto e continuarei adicionando mais a medida que eu for implementando novas funcionalidades:
+* Herança
+* Polimorfismo
+* Encapsulamento
+* Abstração com classes abstratas
+* Separação entre entidades e serviços
+* Tratamento de exceções customizadas
+* Manipulação de arquivos
+
+--------Exemplo de saída----------
+
+Conta [Corrente]
+Titular: Eduardo
+Número: 1273
+Saldo: 300.00
+
+Transações:
+DEPOSITO | R$ 200.00 | Saldo: 200.00
+DEPOSITO | R$ 200.00 | Saldo: 400.00
+SAQUE | R$ 50.00 | Saldo: 350.00
+
+Este projeto foi desenvolvido para praticar conceitos fundamentais de Java e simular um sistema bancário com regras de negócio reais,
+servindo como base para evolução em projetos mais complexos, foi um processo criado para praticar enumeração e composição, a medida que fui me aprofundando
+fui implementando meus novos conhecimentos nesse projeto e atualmente ele está assim.
+
+O que pretendo melhorar futuramente:
+* Implementação de interface gráfica
+* Persistência em banco de dados
+* Sistema de autenticação de usuários
+* Geração de extrato detalhado
+* Histórico com data e hora das transações
