@@ -68,7 +68,7 @@ DEPOSITO | R$ 200.00 | Saldo: 400.00
 SAQUE | R$ 50.00 | Saldo: 350.00
 
 Este projeto foi desenvolvido para praticar conceitos fundamentais de Java e simular um sistema bancário com regras de negócio reais,
-servindo como base para evolução em projetos mais complexos, foi um processo criado para praticar enumeração e composição, a medida que fui me aprofundando
+servindo como base para evolução em projetos mais complexos, foi um projeto criado para praticar enumeração e composição, a medida que fui me aprofundando
 fui implementando meus novos conhecimentos nesse projeto e atualmente ele está assim.
 
 O que pretendo melhorar futuramente:
