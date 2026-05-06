@@ -4,6 +4,8 @@ import ENUM.TipoOperacao;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
 
+import java.util.UUID;
+
 public final class ContaPoupanca extends Contas {
     private static final double TAXA_JUROS = 1.1;
 
@@ -11,26 +13,26 @@ public final class ContaPoupanca extends Contas {
         super();
     }
 
-    public ContaPoupanca(String titular, Integer numero, double balance) {
-        super(titular, numero, balance);
+    public ContaPoupanca(String titular, String idConta, double balance) {
+        super(titular, idConta, balance);
 
     }
 
     @Override
-    public void sacar(double valor){
+    public void sacar(double valor,String id){
         if (balance < valor) {
             throw new SaldoInsuficienteException();
         }
         balance -= valor;
-        addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance));
+        addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance,id));
     }
     @Override
-    public void deposito(double valor){
+    public void deposito(double valor,String id){
         if (valor > 10000) {
             throw new LimiteExcedidoException();
         }
         balance += valor;
-        addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));
+        addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance,id));
     }
 
     public double rendimentoTotal() {

@@ -1,10 +1,13 @@
 package ProgramaBanco;
 
+import BancoServicos.HistoricoTransacaoTxtRepositorio;
 import BancoServicos.SistemaOperacaoBanco;
 import Banco_Contas.*;
 import ENUM.TipoOperacao;
 import Excecoes.ConsoleException;
 import Excecoes.NegocioException;
+import Interfaces.HistoricoTransacaoTxT;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,6 +17,9 @@ import java.util.Scanner;
 
 public class Programa {
     public static void main(String[] args) {
+        SistemaOperacaoBanco service = new SistemaOperacaoBanco();
+        HistoricoTransacaoTxT repo = new HistoricoTransacaoTxtRepositorio();
+
         List<Contas> todasContas = new ArrayList<>();
         Scanner sc = new Scanner(System.in);
         final int quantidade = ConsoleException.lerInteiros(sc, "quantidade de cadastros: ");
@@ -21,29 +27,29 @@ public class Programa {
         int opcao;
         while (limite < quantidade) {
             String nome = ConsoleException.lerString(sc, "Nome titular: ");
-            int numero = ConsoleException.lerInteiros(sc, "iD da conta:");
+            System.out.print("iD da conta: ");
+            String idConta = sc.nextLine();
             double depositoInicial = ConsoleException.lerDouble(sc, "Realize um deposito iniciaL: ");
             opcao = ConsoleException.lerInteiros(sc, "Selecione o tipo de conta (1-Conta corrente|2-Conta empresarial|3-Conta poupanca)\n");
             switch (opcao) {
                 case 1:
                     NegocioException.executar(() -> {
-                        Contas accCorrente = new ContaCorrente(nome, numero, depositoInicial);
+                        Contas accCorrente = new ContaCorrente(nome, idConta, depositoInicial);
                         todasContas.add(accCorrente);
-
                     });
                     limite++;
                     break;
                 case 2:
                     double emprestimo = ConsoleException.lerDouble(sc, "Emprestimo inicial: ");
                     NegocioException.executar(() -> {
-                        Contas accEmp = new ContaEmpresarial(nome, numero, depositoInicial, emprestimo);
+                        Contas accEmp = new ContaEmpresarial(nome, idConta, depositoInicial, emprestimo);
                         todasContas.add(accEmp);
                     });
                     limite++;
                     break;
                 case 3:
                     NegocioException.executar(() -> {
-                        Contas accPoup = new ContaPoupanca(nome, numero, depositoInicial);
+                        Contas accPoup = new ContaPoupanca(nome, idConta, depositoInicial);
                         todasContas.add(accPoup);
                     });
                     limite++;
@@ -55,43 +61,38 @@ public class Programa {
         for (Contas f : todasContas) {
             System.out.println(f);
         }
-        int opcao2 = 0;
+        while (true) {
+            int op2 = ConsoleException.lerInteiros(sc, "1-DEPOSITAR |2-SACAR |3-EXTRATO |4-SAIR\n");
+            if (op2 == 4) {
+                break;
+            }
+            if (op2 == 3) {
+                System.out.println("Digite o ID da conta: ");
+                String idBusca = sc.nextLine();
 
-        while (opcao2 != 3 && quantidade > 0) {
-            System.out.println("1-Deposito | 2-Saque | 3-sair");
-            opcao2 = sc.nextInt();
-            sc.nextLine();
-            switch (opcao2) {
-                case 1:
-                    int numeroContaDep = ConsoleException.lerInteiros(sc, "Digite o numero da conta que deseja realizar a operacao: ");
-                    Contas procuraDep = todasContas.stream().filter(c -> c.getNumero().equals(numeroContaDep)).findFirst().orElse(null);
+                List<Transacao> transacoes = repo.listarPorConta(idBusca);
 
-                    if (procuraDep == null) {
-                        System.out.println("numero invalido");
-                        opcao2 = 0;
-                        break;
-                    } else {
-                        double valorDep = ConsoleException.lerDouble(sc, "Ola " + procuraDep.getTitular() + " digite o valor a ser depositado: ");
-                        SistemaOperacaoBanco service = new SistemaOperacaoBanco();
-                        NegocioException.executar(() -> service.processDeposito(procuraDep,valorDep));
-                        break;
-                    }
-                case 2:
-                    int numeroContaSaq = ConsoleException.lerInteiros(sc, "Digite o numero da conta que deseja realizar o saque: ");
-                    Contas procuraSaq = todasContas.stream().filter(c -> c.getNumero().equals(numeroContaSaq)).findFirst().orElse(null);
-
-                    if (procuraSaq == null) {
-                        System.out.println("numero invalido");
-                        opcao2 = 0;
-                        break;
-                    } else {
-                        double valorSaq = ConsoleException.lerDouble(sc, "Ola " + procuraSaq.getTitular() + " digite o valor a ser sacado: ");
-                        SistemaOperacaoBanco service = new SistemaOperacaoBanco();
-                        NegocioException.executar(() -> service.processSaque(procuraSaq,valorSaq));
-                        break;
-                    }
-                case 3:
-                    break;
+                for (Transacao t : transacoes) {
+                    System.out.println(t);
+                }
+            }
+            if (op2 == 1 || op2 == 2) {
+                System.out.println("Digite o numero da conta que deseja realizar a operacao: ");
+                String numeroConta = sc.nextLine();
+                Contas procura = todasContas.stream().filter(c -> c.getIdConta().equals(numeroConta)).findFirst().orElse(null);
+                if (procura == null) {
+                    System.out.println("numero invalido");
+                    continue;
+                }
+                System.out.println("Ola " + procura.getTitular() + " digite o valor: ");
+                double valor = sc.nextDouble();
+                if (op2 == 1) {
+                    String idContaT = procura.getIdConta();
+                    NegocioException.executar(() -> service.processDeposito(procura, valor, idContaT));
+                } else {
+                    String idContaT = procura.getIdConta();
+                    NegocioException.executar(() -> service.processSaque(procura, valor, idContaT));
+                }
             }
         }
         String path = "C:\\temp\\bancoTeste.txt";

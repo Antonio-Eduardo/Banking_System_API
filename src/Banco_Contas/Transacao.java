@@ -4,18 +4,46 @@ import ENUM.TipoOperacao;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public class Transacao {
+    private String  iD;
+    private String idTransacao;
     private TipoOperacao tipoOperacao;
     private double valor;
     private double saldoApos;
     private LocalDateTime data;
 
-    public Transacao(TipoOperacao tipoOperacao, double valor, double saldoApos) {
+    public Transacao(TipoOperacao tipoOperacao, double valor, double saldoApos, String iD) {
+        this.idTransacao = UUID.randomUUID().toString();
         this.tipoOperacao = tipoOperacao;
         this.valor = valor;
         this.saldoApos = saldoApos;
+        this.iD = iD;
         this.data = LocalDateTime.now();
+    }
+
+    public Transacao(String iD, TipoOperacao tipoOperacao, double valor, double saldoApos ,LocalDateTime data) {
+        this.iD = iD;
+        this.tipoOperacao = tipoOperacao;
+        this.valor = valor;
+        this.data = data;
+    }
+
+    public String getIdTransacao() {
+        return idTransacao;
+    }
+
+    public String getiD() {
+        return iD;
+    }
+
+    public void setiD(String iD) {
+        this.iD = iD;
+    }
+
+    public void setIdTransacao(String idTransacao) {
+        this.idTransacao = idTransacao;
     }
 
     public LocalDateTime getData() {
