@@ -11,9 +11,7 @@ import Interfaces.HistoricoTransacaoTxT;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Programa {
     public static void main(String[] args) {
@@ -59,7 +57,7 @@ public class Programa {
             }
         }
         for (Contas f : todasContas) {
-            System.out.println(f);
+            System.out.println(f.getTitular()+f.getIdConta()+f.getBalance());
         }
         while (true) {
             int op2 = ConsoleException.lerInteiros(sc, "1-DEPOSITAR |2-SACAR |3-EXTRATO |4-SAIR\n");
@@ -97,6 +95,7 @@ public class Programa {
         }
         String path = "C:\\temp\\bancoTeste.txt";
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
+            Collections.sort(todasContas);
             for (Contas f : todasContas) {
                 bw.write(String.valueOf(f));
                 bw.newLine();

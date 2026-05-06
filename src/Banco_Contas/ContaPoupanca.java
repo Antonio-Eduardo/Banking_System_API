@@ -49,10 +49,10 @@ public final class ContaPoupanca extends Contas {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Contas [Poupanca] {");
+        final StringBuilder sb = new StringBuilder("Contas [Poupanca]\n");
         sb.append(super.toString());
-        sb.append(", rendimento previsto= ").append(balance * TAXA_JUROS);
-        sb.append('}');
+        sb.append("\nrendimento previsto= ").append(balance * TAXA_JUROS);
+
         return sb.toString();
     }
 }

@@ -48,10 +48,9 @@ public final class  ContaEmpresarial extends Contas{
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Conta [Empresa] {");
+        final StringBuilder sb = new StringBuilder("Conta [Empresa]\n");
         sb.append(super.toString());
-        sb.append(" emprestimo= ").append(emprestimo);
-        sb.append('}');
+        sb.append("\nemprestimo= ").append(emprestimo);
         return sb.toString();
     }
 }

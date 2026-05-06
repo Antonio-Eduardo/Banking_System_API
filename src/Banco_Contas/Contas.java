@@ -5,7 +5,7 @@ import Excecoes.SaldoInsuficienteException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Contas {
+public abstract class Contas implements Comparable<Contas> {
     private String idConta;
     private String titular;
     protected double balance;
@@ -37,6 +37,11 @@ public abstract class Contas {
     }
     public Transacao getUltimaTransacao() {
         return historicoTransacoes.get(historicoTransacoes.size() - 1);
+    }
+
+    @Override
+    public int compareTo(Contas o) {
+        return getTitular().compareTo(o.getTitular());
     }
 
     @Override
