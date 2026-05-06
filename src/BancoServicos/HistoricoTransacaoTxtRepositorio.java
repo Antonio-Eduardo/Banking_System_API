@@ -5,12 +5,14 @@ import Interfaces.HistoricoTransacaoTxT;
 
 import java.io.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HistoricoTransacaoTxtRepositorio implements HistoricoTransacaoTxT {
     private static final String path = "HistoricoDeTransacoes.txt";
-
+    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     @Override
     public void salvar(Transacao t) {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(path,true))){
@@ -18,7 +20,7 @@ public class HistoricoTransacaoTxtRepositorio implements HistoricoTransacaoTxT {
                     t.getTipoOperacao() + ";" +
                     t.getValor() + ";" +
                     t.getSaldoApos() + ";" +
-                    t.getData();
+                    t.getData().format(fmt);
             bw.write(linha);
             bw.newLine();
         }catch (IOException e){
@@ -39,11 +41,12 @@ public class HistoricoTransacaoTxtRepositorio implements HistoricoTransacaoTxT {
                             TipoOperacao.valueOf(partes[1]),
                             Double.parseDouble(partes[2]),
                             Double.parseDouble(partes[3]),
-                            LocalDateTime.parse(partes[4])
+                            LocalDateTime.parse(partes[4], fmt)
                     );
                     lista.add(t);
                 }
             }
+            Collections.sort(lista);
 
         }catch(FileNotFoundException e){
             throw new RuntimeException("Erro ao listar conta ", e);

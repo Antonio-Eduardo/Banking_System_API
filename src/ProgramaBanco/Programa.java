@@ -57,7 +57,7 @@ public class Programa {
             }
         }
         for (Contas f : todasContas) {
-            System.out.println(f.getTitular()+f.getIdConta()+f.getBalance());
+            System.out.println(f.getTitular()+ "|" + f.getIdConta()+ "|"+f.getBalance());
         }
         while (true) {
             int op2 = ConsoleException.lerInteiros(sc, "1-DEPOSITAR |2-SACAR |3-EXTRATO |4-SAIR\n");
