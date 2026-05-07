@@ -7,6 +7,7 @@ import ENUM.TipoOperacao;
 import Excecoes.ConsoleException;
 import Excecoes.NegocioException;
 import Interfaces.HistoricoTransacaoTxT;
+import Util.ListUtils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -55,11 +56,7 @@ public class Programa {
                 default:
                     System.out.println("Opção inválida! tente novamente");
             }
-        }
-        for (Contas f : todasContas) {
-            System.out.println(f.getTitular()+ "|" + f.getIdConta()+ "|"+f.getBalance());
-        }
-        while (true) {
+        }while (true) {
             int op2 = ConsoleException.lerInteiros(sc, "1-DEPOSITAR |2-SACAR |3-EXTRATO |4-SAIR\n");
             if (op2 == 4) {
                 break;
@@ -93,18 +90,7 @@ public class Programa {
                 }
             }
         }
-        String path = "C:\\temp\\bancoTeste.txt";
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
-            Collections.sort(todasContas);
-            for (Contas f : todasContas) {
-                bw.write(String.valueOf(f));
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        for (Contas f : todasContas) {
-            System.out.println(f);
-        }
+        ListUtils.writeLista(todasContas);
+        ListUtils.printLista(todasContas);
     }
 }
