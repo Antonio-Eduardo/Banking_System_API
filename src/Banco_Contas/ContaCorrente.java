@@ -3,17 +3,15 @@ package Banco_Contas;
 import ENUM.TipoOperacao;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
+import Services.Tax;
 
 import java.util.Scanner;
 import java.util.UUID;
 
-public class ContaCorrente extends Contas {
-
-
+public class ContaCorrente extends Contas implements Tax {
     public ContaCorrente(String titular, String idConta, double balance) {
         super(titular, idConta, balance);
     }
-
     @Override
     public void sacar(double valor, String id){
         double taxaCorrente = 25.00;
@@ -28,15 +26,16 @@ public class ContaCorrente extends Contas {
     }
     @Override
     public void deposito(double valor, String id){
-        double taxaCorrente = 25.00;
-        if (taxaCorrente+ valor > 25000) {
+        if (tax(valor)+valor > 25000) {
             throw new LimiteExcedidoException();
         }
-        balance += valor - taxaCorrente;
+        balance += valor - tax(valor);
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance ,id));
     }
-
-
+    @Override
+    public double tax(double valor) {
+        return valor * 0.02;
+    }
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("\nConta [Corrente]\n");

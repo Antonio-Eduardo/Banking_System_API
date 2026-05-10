@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Contas implements Comparable<Contas> {
+public abstract class Contas{
     private String idConta;
     private String titular;
     protected double balance;
@@ -35,21 +35,14 @@ public abstract class Contas implements Comparable<Contas> {
         if (historicoTransacoes.isEmpty()) return null;
         return historicoTransacoes.get(historicoTransacoes.size() - 1);
     }
-
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Contas contas)) return false;
         return Objects.equals(idConta, contas.idConta);
     }
-
     @Override
     public int hashCode() {
         return Objects.hashCode(idConta);
-    }
-
-    @Override
-    public int compareTo(Contas o) {
-        return getTitular().compareTo(o.getTitular());
     }
     @Override
     public String toString() {

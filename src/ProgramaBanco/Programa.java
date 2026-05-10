@@ -83,11 +83,10 @@ public class Programa {
                 }
                 System.out.println("Ola " + procura.getTitular() + " digite o valor: ");
                 double valor = sc.nextDouble();
+                String idContaT = procura.getIdConta();
                 if (op2 == 1) {
-                    String idContaT = procura.getIdConta();
                     NegocioException.executar(() -> service.processDeposito(procura, valor, idContaT));
                 } else {
-                    String idContaT = procura.getIdConta();
                     NegocioException.executar(() -> service.processSaque(procura, valor, idContaT));
                 }
             }

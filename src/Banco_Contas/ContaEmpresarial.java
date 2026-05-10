@@ -3,12 +3,12 @@ package Banco_Contas;
 import ENUM.TipoOperacao;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
+import Services.Tax;
 
 import java.util.UUID;
 
-public final class  ContaEmpresarial extends Contas{
+public final class  ContaEmpresarial extends Contas implements Tax {
     private double emprestimo;
-
 
     public ContaEmpresarial(String titular, String idConta, double balance, double emprestimo) {
         super(titular, idConta, balance);
@@ -28,21 +28,23 @@ public final class  ContaEmpresarial extends Contas{
     }
     @Override
     public void deposito(double valor, String id){
-        double taxaEmpresa = 50.00;
-        if (taxaEmpresa + valor > 35000) {
+
+        if (tax(valor) + valor > 35000) {
             throw new LimiteExcedidoException();
         }
-        balance += valor - taxaEmpresa;
+        balance += valor - tax(valor);
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance,id));;
+    }
+    @Override
+    public double tax(double valor) {
+        return valor * 0.07;
     }
     public void addEmprestimo(double valor){
         emprestimo += valor;
     }
-
     public double getEmprestimo() {
         return emprestimo;
     }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("\nConta [Empresa]\n");

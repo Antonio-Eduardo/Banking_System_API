@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
 
-public class Transacao implements Comparable<Transacao> {
+public class Transacao{
     private Contas conta;
     private String iD;
     private String idTransacao;
@@ -64,10 +64,7 @@ public class Transacao implements Comparable<Transacao> {
         return valor;
     }
 
-    @Override
-    public int compareTo(Transacao o) {
-        return o.getiD().compareTo(o.iD);
-    }
+
 
     @Override
     public String toString() {

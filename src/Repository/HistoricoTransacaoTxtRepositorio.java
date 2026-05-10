@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class HistoricoTransacaoTxtRepositorio implements HistoricoTransacaoTxT {
@@ -47,7 +48,7 @@ public class HistoricoTransacaoTxtRepositorio implements HistoricoTransacaoTxT {
                     lista.add(t);
                 }
             }
-            Collections.sort(lista);
+            lista.sort(Comparator.comparing(Transacao::getiD));
 
         }catch(FileNotFoundException e){
             throw new RuntimeException("Erro ao listar conta ", e);
