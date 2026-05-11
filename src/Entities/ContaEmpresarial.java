@@ -1,11 +1,9 @@
-package Banco_Contas;
+package Entities;
 
 import ENUM.TipoOperacao;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
 import Services.Tax;
-
-import java.util.UUID;
 
 public final class  ContaEmpresarial extends Contas implements Tax {
     private double emprestimo;

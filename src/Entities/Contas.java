@@ -1,7 +1,4 @@
-package Banco_Contas;
-
-import Excecoes.SaldoInsuficienteException;
-import Util.ListUtils;
+package Entities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +8,7 @@ public abstract class Contas{
     private String idConta;
     private String titular;
     protected double balance;
-    List<Transacao> historicoTransacoes = new ArrayList<>();
+    private final List<Transacao> historicoTransacoes = new ArrayList<>();
     public void addTransacao(Transacao transacao){
         historicoTransacoes.add(transacao);
     }

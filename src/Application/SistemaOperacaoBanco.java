@@ -1,7 +1,7 @@
 package Application;
 
 import Repository.HistoricoTransacaoTxtRepositorio;
-import Banco_Contas.*;
+import Entities.*;
 import Services.HistoricoTransacaoTxT;
 
 public class SistemaOperacaoBanco {

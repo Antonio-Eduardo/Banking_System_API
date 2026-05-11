@@ -1,6 +1,6 @@
 package Services;
 
-import Banco_Contas.Transacao;
+import Entities.Transacao;
 import java.util.List;
 
 public interface HistoricoTransacaoTxT {

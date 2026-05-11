@@ -1,5 +1,5 @@
 package Repository;
-import Banco_Contas.Transacao;
+import Entities.Transacao;
 import ENUM.TipoOperacao;
 import Services.HistoricoTransacaoTxT;
 
@@ -7,7 +7,6 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 

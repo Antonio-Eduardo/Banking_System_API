@@ -2,7 +2,7 @@ package ProgramaBanco;
 
 import Repository.HistoricoTransacaoTxtRepositorio;
 import Application.SistemaOperacaoBanco;
-import Banco_Contas.*;
+import Entities.*;
 import Application.ConsoleException;
 import Excecoes.NegocioException;
 import Services.HistoricoTransacaoTxT;
@@ -68,10 +68,7 @@ public class Programa {
                     continue;
                 }
                 List<Transacao> transacoes = repo.listarPorConta(idBusca);
-                for (Transacao t : transacoes) {
-                    System.out.println(t);
-                }
-
+                transacoes.forEach(System.out::println);
             }
             if (op2 == 1 || op2 == 2) {
                 System.out.println("Digite o numero da conta que deseja realizar a operacao: ");

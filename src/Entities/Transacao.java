@@ -1,14 +1,12 @@
-package Banco_Contas;
+package Entities;
 
 import ENUM.TipoOperacao;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 import java.util.UUID;
 
 public class Transacao{
-    private Contas conta;
     private String iD;
     private String idTransacao;
     private TipoOperacao tipoOperacao;
@@ -63,8 +61,6 @@ public class Transacao{
     public double getValor() {
         return valor;
     }
-
-
 
     @Override
     public String toString() {

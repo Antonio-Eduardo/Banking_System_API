@@ -12,14 +12,12 @@ public class ConsoleException {
                 int valor = sc.nextInt();
                 sc.nextLine();
                 return valor;
-
             } catch (InputMismatchException e) {
                 System.out.println("Numero invalido");
                 sc.nextLine();
             }
         }
     }
-
     public static double lerDouble(Scanner sc, String mensagem) {
         while (true) {
             try {

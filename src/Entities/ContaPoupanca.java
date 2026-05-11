@@ -1,45 +1,41 @@
-package Banco_Contas;
+package Entities;
 
 import ENUM.TipoOperacao;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
 import Services.Tax;
 
-import java.util.Scanner;
-import java.util.UUID;
-
-public class ContaCorrente extends Contas implements Tax {
-    public ContaCorrente(String titular, String idConta, double balance) {
+public final class ContaPoupanca extends Contas implements Tax {
+    private static final double JUROS_RENDIMENTO = 0.008;
+    public ContaPoupanca(String titular, String idConta, double balance) {
         super(titular, idConta, balance);
     }
     @Override
     public void sacar(double valor, String id){
-        double taxaCorrente = 25.00;
-        if (balance < valor + taxaCorrente) {
+        if (balance < valor) {
             throw new SaldoInsuficienteException();
         }
-        if (valor >= 20000){
-            throw new LimiteExcedidoException();
-        }
-        balance -= valor + taxaCorrente;
+        balance -= valor + tax(valor);
         addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance,id));
     }
     @Override
     public void deposito(double valor, String id){
-        if (tax(valor)+valor > 25000) {
+        if (tax(valor) + valor > 10000) {
             throw new LimiteExcedidoException();
         }
         balance += valor - tax(valor);
-        addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance ,id));
+        addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance,id));
     }
     @Override
     public double tax(double valor) {
-        return valor * 0.02;
+        return valor * 0.005;
     }
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("\nConta [Corrente]\n");
+        final StringBuilder sb = new StringBuilder("\nContas [Poupanca]\n");
         sb.append(super.toString());
+        sb.append("\nrendimento previsto= ").append(balance * JUROS_RENDIMENTO);
+
         return sb.toString();
     }
 }
