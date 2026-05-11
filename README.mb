@@ -46,6 +46,9 @@ SAQUE | R$ 50.00 | Saldo: 350.00
 2. Abrir no IntelliJ
 3. Rodar a classe Programa
 
+ + Implementação do banco de dados usando SQL/MySQL com JDBC (EM ANDAMENTO)
+-- adicionando classe de conexão JDBC e db.properties
+
 ## Observações
 
 Fiz esse projeto pra praticar herança, polimorfismo e organização de código.
