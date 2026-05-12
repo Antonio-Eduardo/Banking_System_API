@@ -3,6 +3,7 @@ package Entities;
 import ENUM.TipoOperacao;
 import Excecoes.LimiteExcedidoException;
 import Excecoes.SaldoInsuficienteException;
+import Repository.RepositoryContasMySQL;
 import Services.Tax;
 
 public class ContaCorrente extends Contas implements Tax {

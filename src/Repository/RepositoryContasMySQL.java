@@ -101,5 +101,21 @@ public class RepositoryContasMySQL implements Repository<Contas> {
         }
         return  null;
     }
+    public void updateSaldo(Long id, Double saldo){
+        try {
+            conn = DB.getConnection();
+            st = conn.prepareStatement("UPDATE contas SET balance = ? WHERE idConta = ?");
+            st.setDouble(1, saldo);
+            st.setLong(2,id);
+
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DBException();
+        }finally {
+            DB.closeStatement(st);
+            DB.closeConnection();
+        }
+    }
     }
 
