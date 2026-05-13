@@ -30,6 +30,7 @@ public abstract class Conta {
     }
     public abstract void sacar(double valor, long id);
     public abstract void deposito(double valor, long id);
+    public abstract void transferencia( Double valorTx, Conta contaY);
     public Long getIdConta() {
         return idConta;
     }
@@ -44,6 +45,9 @@ public abstract class Conta {
     public boolean equals(Object o) {
         if (!(o instanceof Conta contas)) return false;
         return Objects.equals(idConta, contas.idConta);
+    }
+    protected void creditar(double valor){
+        balance += valor;
     }
 
     public void setIdConta(long idConta) {

@@ -67,8 +67,8 @@ public class Main {
             }
         }
         while (true) {
-            int op2 = ConsoleException.lerInteiros(sc, "1-DEPOSITAR |2-SACAR |3-EXTRATO |4-SAIR\n");
-            if (op2 == 4) {
+            int op2 = ConsoleException.lerInteiros(sc, "1-DEPOSITAR |2-SACAR |3-EXTRATO |4-TRANSFERENCIA |5-SAIR\n");
+            if (op2 == 5) {
                 break;
             }
             if (op2 == 3) {
@@ -85,7 +85,7 @@ public class Main {
                     System.out.println(t + "\n");
                 }
             }
-            if (op2 == 1 || op2 == 2) {
+            if (op2 == 1 || op2 == 2 || op2 == 4) {
                 System.out.println("Digite o numero da conta que deseja realizar a operacao: ");
                 Long numeroConta = sc.nextLong();
                 Conta procura = repoContasSQL.buscarPorId(numeroConta);
@@ -98,9 +98,20 @@ public class Main {
                 if (op2 == 1) {
                     NegocioException.executar(() -> service.processDeposito(procura, valor));
                     System.out.println("[DEPOSITO CONCLUIDO] FINALIZADO!\n");
-                } else {
+                } else if (op2 == 2){
                     NegocioException.executar(() -> service.processSaque(procura, valor));
                     System.out.println("[SAQUE CONCLUIDO] FINALIZADO!\n");
+                } else {
+                    System.out.println("Digite o numero da conta para que deseja realizar a transferencia: ");
+                    Long numeroContaTransf = sc.nextLong();
+                    Conta procuraTransf = repoContasSQL.buscarPorId(numeroContaTransf);
+                    int escolhaTransf = ConsoleException.lerInteiros(sc,"Desejar realizar uma transferencia para conta [" + procuraTransf.getTitular() + "] ? [1-SIM|2-CANCELAR]");
+                    if (escolhaTransf == 1) {
+                        NegocioException.executar(() -> service.processTransferencia(procura, valor, procuraTransf));
+                        System.out.println("[TRANSFERENCIA CONCLUIDO] FINALIZADO!\n");
+                    }else {
+                        System.out.println("OPERACAO CANCELADA!");
+                    }
                 }
             }
         }

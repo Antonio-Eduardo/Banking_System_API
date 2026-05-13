@@ -29,4 +29,14 @@ public class SistemaOperacaoBanco {
             repoMySQL.updateSaldo(conta.getIdConta(),conta.getBalance());
         }
     }
+    public void processTransferencia(Conta contaOrigem, Double valorT, Conta contaDestino){
+        contaOrigem.transferencia(valorT,contaDestino);
+        Transacao tOrigem = contaOrigem.getUltimaTransacao();
+        Transacao tDestino = contaDestino.getUltimaTransacao();
+        if (tOrigem != null && tDestino != null){
+            repo.salvar(tOrigem); repo.salvar(tDestino);
+            repoTransacoesSQL.salvar(tOrigem); repoTransacoesSQL.salvar(tDestino);
+            repoMySQL.transferenciaOperacao(contaOrigem,contaDestino);
+        }
+    }
 }

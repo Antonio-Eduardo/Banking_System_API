@@ -32,6 +32,19 @@ public class ContaCorrente extends Conta implements Tax {
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance ,id));
     }
     @Override
+    public void transferencia( Double valorTx, Conta contaY) {
+        if (balance >= valorTx + tax(valorTx)) {
+            balance -= valorTx + tax(valorTx);
+            contaY.creditar(valorTx);
+
+            addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valorTx, balance, getIdConta()));
+            contaY.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valorTx, contaY.getBalance(), contaY.getIdConta()));
+        } else {
+            throw new SaldoInsuficienteException();
+        }
+    }
+
+    @Override
     public double tax(double valor) {
         return valor * 0.02;
     }

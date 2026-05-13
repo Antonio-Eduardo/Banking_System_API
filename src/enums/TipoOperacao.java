@@ -2,7 +2,8 @@ package enums;
 
 public enum TipoOperacao {
     OPERACAO_DEPOSITO(1),
-    OPERACAO_SAQUE(2);
+    OPERACAO_SAQUE(2),
+    OPERACAO_TRANSFERENCIA(3);
 
     private final int id;
 

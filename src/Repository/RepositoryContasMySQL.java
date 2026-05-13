@@ -7,6 +7,7 @@ import entities.Conta;
 import exceptions.DBException;
 import Services.Repository;
 import db.DB;
+import exceptions.DBIntegrityException;
 
 import java.sql.*;
 
@@ -53,6 +54,7 @@ public class RepositoryContasMySQL implements Repository<Conta> {
             throw new DBException();
         }
     }
+
     public Conta buscarPorId(Long id) {
         String sql = "SELECT * FROM contas WHERE idConta = ?";
         try (Connection conn = DB.getConnection();
@@ -74,22 +76,74 @@ public class RepositoryContasMySQL implements Repository<Conta> {
                     }
                 }
             }
-        }
-    catch (SQLException e) {
+        } catch (SQLException e) {
             throw new DBException();
         }
-        return  null;
+        return null;
     }
-    public void updateSaldo(Long id, Double saldo){
+
+    public void updateSaldo(Long id, Double saldo) {
         String sql = "UPDATE contas SET balance = ? WHERE idConta = ?";
-        try(Connection conn = DB.getConnection();
-        PreparedStatement st = conn.prepareStatement(sql)){
+        try (Connection conn = DB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
             st.setDouble(1, saldo);
-            st.setLong(2,id);
-            st.executeUpdate();
+            st.setLong(2, id);
+            int rowsAffected = st.executeUpdate();
+            if (rowsAffected == 0){
+                System.out.println("Nenhuma linha afetada.");
+            }
+            System.out.println("Linhas afetadas: "+rowsAffected);
         } catch (SQLException e) {
             throw new DBException();
         }
     }
+
+    public void transferenciaOperacao(Conta origem, Conta destino) {
+        try (Connection conn = DB.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                //origem
+                updateSaldoTransferencia(conn,origem.getIdConta(),origem.getBalance());
+                //destino
+                updateSaldoTransferencia(conn,destino.getIdConta(), destino.getBalance());
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
+    public void updateSaldoTransferencia(Connection conn, Long id, Double saldo) {
+        String sql = "UPDATE contas SET balance = ? WHERE idConta = ?";
+        try (PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setDouble(1, saldo);
+            st.setLong(2, id);
+            int rowsAffected = st.executeUpdate();
+            if (rowsAffected == 0){
+                System.out.println("Nenhuma linha afetada.");
+            }
+            System.out.println("Linhas afetadas: "+rowsAffected);
+        } catch (SQLException e) {
+            throw new DBException();
+        }
+    }
+
+    public void deleteConta(Long id) {
+        String sql = "DELETE FROM contas WHERE idConta = ?";
+        try (Connection conn = DB.getConnection();
+             PreparedStatement st = conn.prepareStatement(sql)) {
+            st.setLong(1, id);
+
+            int rowsAffected = st.executeUpdate();
+            if (rowsAffected == 0){
+                System.out.println("Nenhuma linha afetada.");
+            }
+            System.out.println("Linhas afetadas: "+rowsAffected);
+        } catch (SQLException e) {
+            throw new DBIntegrityException(e.getMessage());
+        }
+    }
+}
 

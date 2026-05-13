@@ -20,6 +20,10 @@ public class RepositoryTransacaoMySQL implements Repository<Transacao> {
             st.setLong(3,t.getiD());
 
             int rowsAffected = st.executeUpdate();
+            if (rowsAffected == 0){
+                System.out.println("Nenhuma linha afetada.");
+            }
+            System.out.println("Linhas afetadas: "+rowsAffected);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

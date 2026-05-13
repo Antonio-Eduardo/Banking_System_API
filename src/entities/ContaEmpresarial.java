@@ -9,7 +9,7 @@ public final class  ContaEmpresarial extends Conta implements Tax {
     private double emprestimo;
 
     public ContaEmpresarial(String titular, long idConta, double balance, double emprestimo) {
-        super(titular,balance);
+        super(idConta, titular,balance);
         this.emprestimo = emprestimo;
     }
 
@@ -39,6 +39,21 @@ public final class  ContaEmpresarial extends Conta implements Tax {
         balance += valor - tax(valor);
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance,id));;
     }
+
+
+    @Override
+    public void transferencia( Double valorTx, Conta contaY) {
+        if (balance >= valorTx + tax(valorTx)) {
+            balance -= valorTx + tax(valorTx);
+            contaY.creditar(valorTx);
+
+            addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valorTx, balance, getIdConta()));
+            contaY.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valorTx, contaY.getBalance(), contaY.getIdConta()));
+        } else {
+            throw new SaldoInsuficienteException();
+        }
+    }
+
     @Override
     public double tax(double valor) {
         return valor * 0.07;
