@@ -19,11 +19,8 @@ public class TransacaoDAOImpl implements TransacaoDAO {
             st.setDouble(2,t.getValor());
             st.setLong(3,t.getiD());
 
-            int rowsAffected = st.executeUpdate();
-            if (rowsAffected == 0){
-                System.out.println("Nenhuma linha afetada.");
-            }
-            System.out.println("Linhas afetadas: "+rowsAffected);
+             st.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

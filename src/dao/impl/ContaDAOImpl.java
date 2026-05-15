@@ -88,11 +88,7 @@ public class ContaDAOImpl implements ContaDAO {
              PreparedStatement st = conn.prepareStatement(sql)) {
             st.setDouble(1, saldo);
             st.setLong(2, id);
-            int rowsAffected = st.executeUpdate();
-            if (rowsAffected == 0){
-                System.out.println("Nenhuma linha afetada.");
-            }
-            System.out.println("Linhas afetadas: "+rowsAffected);
+             st.executeUpdate();
         } catch (SQLException e) {
             throw new DBException();
         }
@@ -120,11 +116,7 @@ public class ContaDAOImpl implements ContaDAO {
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setDouble(1, saldo);
             st.setLong(2, id);
-            int rowsAffected = st.executeUpdate();
-            if (rowsAffected == 0){
-                System.out.println("Nenhuma linha afetada.");
-            }
-            System.out.println("Linhas afetadas: "+rowsAffected);
+           st.executeUpdate();
         } catch (SQLException e) {
             throw new DBException();
         }
@@ -136,11 +128,8 @@ public class ContaDAOImpl implements ContaDAO {
              PreparedStatement st = conn.prepareStatement(sql)) {
             st.setLong(1, id);
 
-            int rowsAffected = st.executeUpdate();
-            if (rowsAffected == 0){
-                System.out.println("Nenhuma linha afetada.");
-            }
-            System.out.println("Linhas afetadas: "+rowsAffected);
+            st.executeUpdate();
+
         } catch (SQLException e) {
             throw new DBIntegrityException(e.getMessage());
         }
