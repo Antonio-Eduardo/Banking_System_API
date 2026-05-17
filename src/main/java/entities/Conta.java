@@ -14,7 +14,7 @@ public abstract class Conta {
     private String titular;
     protected double balance;
 
-    @Transient
+    @OneToMany(mappedBy = "conta")
     private final List<entities.Transacao> historicoTransacoes = new ArrayList<>();
 
     public void addTransacao(entities.Transacao transacao){

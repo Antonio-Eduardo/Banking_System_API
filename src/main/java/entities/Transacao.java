@@ -1,10 +1,7 @@
 package entities;
 
 import enums.TipoOperacao;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,14 +10,18 @@ import java.time.format.DateTimeFormatter;
 public class Transacao{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long iD;
+    private Long iD;
     private String idTransacao;
     private TipoOperacao tipoOperacao;
     private double valor;
     private double saldoApos;
     private LocalDateTime data;
 
-    public Transacao(TipoOperacao tipoOperacao, double valor, double saldoApos, long iD) {
+    @ManyToOne
+    @JoinColumn(name = "id_conta")
+    private Conta conta;
+
+    public Transacao(TipoOperacao tipoOperacao, double valor, double saldoApos, Long iD) {
         this.tipoOperacao = tipoOperacao;
         this.valor = valor;
         this.saldoApos = saldoApos;
@@ -30,7 +31,7 @@ public class Transacao{
     public Transacao() {
     }
 
-    public Transacao(long iD, TipoOperacao tipoOperacao, double valor, double saldoApos , LocalDateTime data) {
+    public Transacao(Long iD, TipoOperacao tipoOperacao, double valor, double saldoApos , LocalDateTime data) {
         this.iD = iD;
         this.tipoOperacao = tipoOperacao;
         this.valor = valor;
@@ -45,11 +46,11 @@ public class Transacao{
         this.tipoOperacao = tipoOperacao;
     }
 
-    public long getiD() {
+    public Long getiD() {
         return iD;
     }
 
-    public void setiD(long iD) {
+    public void setiD(Long iD) {
         this.iD = iD;
     }
 
