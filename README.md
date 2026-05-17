@@ -36,12 +36,12 @@ Projeto de um sistema bancário desenvolvido em Java com foco em Programação O
 
 ## Estrutura
 
-- `entities` → classes das contas e transações
-- `dao` → interfaces DAO
-- `dao.impl` → implementação JDBC/MySQL
+- `main.entities` → classes das contas e transações
+- `main.dao` → interfaces DAO
+- `main.dao.impl` → implementação JDBC/MySQL
 - `services` → regras de negócio
-- `db` → conexão com banco de dados
-- `exceptions` → tratamento de erros
+- `main.dao.db` → conexão com banco de dados
+- `main.exceptions` → tratamento de erros
 - `main` → execução no console
 
 ## Regras de negócio
@@ -91,7 +91,7 @@ TRANSFERENCIA | R$ 100.00 | Saldo: 250.00
 1. Clonar o repositório
 2. Configurar o banco de dados MySQL
 3. Ajustar as credenciais de conexão na classe `DB.java`
-4. Executar a classe `Main.java`
+4. Executar a classe `main.java.Main.java`
 
 ## Observações
 

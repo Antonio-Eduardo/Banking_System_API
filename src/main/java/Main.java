@@ -1,12 +1,11 @@
-package main;
-
-import factory.ContaFactory;
 import dao.ContaDAO;
-import dao.DaoFactory;
 import dao.TransacaoDAO;
+import entities.Conta;
+import entities.Transacao;
+import factory.ContaFactory;
+import factory.DaoFactory;
 import service.OperacaoBanco;
 import factory.OperacaoFactory;
-import entities.*;
 import util.ConsoleInput;
 import exceptions.NegocioException;
 

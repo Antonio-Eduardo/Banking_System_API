@@ -1,5 +1,7 @@
-package dao;
+package factory;
 
+import dao.ContaDAO;
+import dao.TransacaoDAO;
 import dao.impl.ContaDAOImpl;
 import dao.impl.TransacaoDAOImpl;
 

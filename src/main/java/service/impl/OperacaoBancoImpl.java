@@ -2,10 +2,10 @@ package service.impl;
 
 import dao.ContaDAO;
 import dao.TransacaoDAO;
+import entities.Conta;
+import entities.Transacao;
 import service.OperacaoBanco;
-import entities.*;
-import dao.impl.TransacaoDAOImpl;
-import dao.impl.ContaDAOImpl;
+import main.entities.*;
 
 public class OperacaoBancoImpl implements OperacaoBanco {
     private final ContaDAO contaDAO;
