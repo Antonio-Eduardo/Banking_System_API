@@ -1,12 +1,18 @@
 package entities;
 
 import enums.TipoOperacao;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
+@Entity
 public class Transacao{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long iD;
     private String idTransacao;
     private TipoOperacao tipoOperacao;
@@ -15,15 +21,12 @@ public class Transacao{
     private LocalDateTime data;
 
     public Transacao(TipoOperacao tipoOperacao, double valor, double saldoApos, long iD) {
-        this.idTransacao = UUID.randomUUID().toString();
         this.tipoOperacao = tipoOperacao;
         this.valor = valor;
         this.saldoApos = saldoApos;
         this.iD = iD;
         this.data = LocalDateTime.now();
-
     }
-
     public Transacao() {
     }
 
