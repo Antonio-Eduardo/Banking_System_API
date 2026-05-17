@@ -3,10 +3,14 @@ package entities;
 import enums.TipoOperacao;
 import exceptions.LimiteExcedidoException;
 import exceptions.SaldoInsuficienteException;
+import jakarta.persistence.Entity;
 import service.Tax;
 
+@Entity
 public final class ContaPoupanca extends Conta implements Tax {
     private static final double JUROS_RENDIMENTO = 0.008;
+
+    public ContaPoupanca(){}
     public ContaPoupanca(String titular, Long idConta, double balance) {
         super(idConta,titular, balance);
     }
