@@ -3,11 +3,14 @@ package entities;
 import enums.TipoOperacao;
 import exceptions.LimiteExcedidoException;
 import exceptions.SaldoInsuficienteException;
+import jakarta.persistence.Entity;
 import service.Tax;
 
+@Entity
 public final class  ContaEmpresarial extends Conta implements Tax {
     private double emprestimo;
 
+    public ContaEmpresarial(){}
     public ContaEmpresarial(String titular, long idConta, double balance, double emprestimo) {
         super(idConta, titular,balance);
         this.emprestimo = emprestimo;
