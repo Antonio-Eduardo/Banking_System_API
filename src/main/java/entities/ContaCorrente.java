@@ -3,14 +3,18 @@ package entities;
 import enums.TipoOperacao;
 import exceptions.LimiteExcedidoException;
 import exceptions.SaldoInsuficienteException;
+import jakarta.persistence.Entity;
 import service.Tax;
 
+@Entity
 public class ContaCorrente extends Conta implements Tax {
+
+    public ContaCorrente(){}
     public ContaCorrente(String titular, double balance) {
         super(titular, balance);
     }
-
     public ContaCorrente(String titular,Long id, double balance){super(id,titular,balance);}
+
     @Override
     public void sacar(double valor, long id){
         double taxaCorrente = 25.00;
