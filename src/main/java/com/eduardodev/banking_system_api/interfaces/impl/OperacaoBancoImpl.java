@@ -1,8 +1,8 @@
-package interfaces.impl;
+package com.eduardodev.banking_system_api.interfaces.impl;
 
 import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.exceptions.DBException;
-import interfaces.OperacaoBanco;
+import com.eduardodev.banking_system_api.interfaces.OperacaoBanco;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 

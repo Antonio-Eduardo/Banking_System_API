@@ -3,9 +3,11 @@ package com.eduardodev.banking_system_api.service;
 import com.eduardodev.banking_system_api.entities.Transacao;
 import com.eduardodev.banking_system_api.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+@Service
 public class TransactionService {
 
     @Autowired

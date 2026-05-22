@@ -1,5 +1,7 @@
 package com.eduardodev.banking_system_api.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +16,7 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonPropertyOrder({"titular", "idConta", "balance", "historicoTransacoes"})
 public abstract class Conta {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,6 +24,8 @@ public abstract class Conta {
     private String titular;
     protected double balance;
 
+
+    @JsonIgnore
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transacao> historicoTransacoes = new ArrayList<>();
 
@@ -31,29 +36,21 @@ public abstract class Conta {
 
     public abstract void sacar(double valor);
     public abstract void deposito(double valor);
-    public abstract void transferencia( Double valor, Conta contaDestino);
+    public abstract void transferencia(Double valor, Conta contaDestino);
+
+    @JsonIgnore
     public Transacao getUltimaTransacao() {
-        if (historicoTransacoes.isEmpty()) return null;
+        if (historicoTransacoes == null || historicoTransacoes.isEmpty()) return null;
         return historicoTransacoes.getLast();
     }
+
     public void creditar(double valor){
         balance += valor;
     }
-
 
     @Override
     public int hashCode() {
         return Objects.hashCode(idConta);
     }
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("\ntitular= ").append(titular).append('\'');
-        sb.append("\nnumero= ").append(idConta);
-        sb.append("\nSaldo= ").append(balance);
-        sb.append("\n--- Transacoes ---\n");
-        for (Transacao t : historicoTransacoes){
-            sb.append(t).append("\n");
-        }
-        return sb.toString();
-    }
- }
+
+}

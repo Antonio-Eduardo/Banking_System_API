@@ -3,15 +3,13 @@ package com.eduardodev.banking_system_api.entities;
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
-import interfaces.Tax;
+import com.eduardodev.banking_system_api.interfaces.Tax;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 public class ContaCorrente extends Conta implements Tax {
 
     @Override
@@ -51,10 +49,5 @@ public class ContaCorrente extends Conta implements Tax {
     public double tax(double valor) {
         return valor * 0.02;
     }
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("\nConta [Corrente]\n");
-        sb.append(super.toString());
-        return sb.toString();
-    }
+
 }
