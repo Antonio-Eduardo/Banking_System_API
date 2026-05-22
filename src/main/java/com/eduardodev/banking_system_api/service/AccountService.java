@@ -5,6 +5,7 @@ import com.eduardodev.banking_system_api.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,5 +31,15 @@ public class AccountService {
     public List<Conta> findAllAccounts() {
         return new ArrayList<>(accountRepository.findAll());
     }
+    public Conta updateDeposit(Conta conta, BigDecimal amount) {
+        Conta existingConta = accountRepository.findById(conta.getIdConta()).orElse(null);
+        if (existingConta != null) {
+            existingConta.deposito(amount);
+            return accountRepository.save(existingConta);
+        } else {
+            return null;
+        }
+    }
+
 
 }

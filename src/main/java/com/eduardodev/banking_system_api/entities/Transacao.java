@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,8 +25,8 @@ public class Transacao{
     private Long iD;
     @Enumerated(EnumType.STRING)
     private TipoOperacao tipoOperacao;
-    private double valor;
-    private double saldoApos;
+    private BigDecimal valor;
+    private BigDecimal saldoApos;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Fortaleza")
     private Instant data;
 
@@ -33,7 +34,7 @@ public class Transacao{
     @JoinColumn(name = "id_conta")
     private Conta conta;
 
-    public Transacao(TipoOperacao tipoOperacao, double valor, double balance) {
+    public Transacao(TipoOperacao tipoOperacao, BigDecimal valor, BigDecimal balance) {
         this.tipoOperacao = tipoOperacao;
         this.valor = valor;
         this.saldoApos = balance;

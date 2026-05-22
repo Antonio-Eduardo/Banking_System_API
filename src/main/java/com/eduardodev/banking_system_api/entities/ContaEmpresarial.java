@@ -8,39 +8,40 @@ import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public final class  ContaEmpresarial extends Conta implements Tax {
-    private double emprestimo;
+    private BigDecimal emprestimo;
 
     @Override
-    public void sacar(double valor){
-        double taxaEmpresa = 50.00;
-        if (balance < valor + taxaEmpresa) {
+    public void sacar(BigDecimal valor){
+        if (valor.add(tax(valor)).compareTo(balance) > 0) {
             throw new SaldoInsuficienteException();
         }
-        if (valor > 20000){
+        if (valor.compareTo(new BigDecimal("20000")) >= 0){
             throw new LimiteExcedidoException();
         }
-        balance -= valor + taxaEmpresa;
+        balance = balance.subtract(valor.add(tax(valor)));
         addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance));
     }
     @Override
-    public void deposito(double valor){
+    public void deposito(BigDecimal valor){
 
-        if (tax(valor) + valor > 35000) {
+        if (valor.add(tax(valor)).compareTo(new BigDecimal("5000")) > 0) {
             throw new LimiteExcedidoException();
         }
-        balance += valor - tax(valor);
+        balance = balance.add(valor).subtract(tax(valor));
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));;
     }
 
 
     @Override
-    public void transferencia( Double valor, Conta contaDestino) {
-        if (balance >= valor + tax(valor)) {
-            balance -= valor + tax(valor);
+    public void transferencia( BigDecimal valor, Conta contaDestino) {
+        if (balance.compareTo(valor.add(tax(valor))) >= 0) {
+            balance = balance.subtract(valor.add(tax(valor)));
             contaDestino.creditar(valor);
 
             addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, this.getBalance()));
@@ -51,8 +52,8 @@ public final class  ContaEmpresarial extends Conta implements Tax {
     }
 
     @Override
-    public double tax(double valor) {
-        return valor * 0.07;
+    public BigDecimal tax(BigDecimal valor) {
+        return valor.multiply(BigDecimal.valueOf(0.07));
     }
 
 }

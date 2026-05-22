@@ -7,32 +7,34 @@ import com.eduardodev.banking_system_api.interfaces.Tax;
 import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @NoArgsConstructor
 public final class ContaPoupanca extends Conta implements Tax {
     private static final double JUROS_RENDIMENTO = 0.008;
 
     @Override
-    public void sacar(double valor){
-        if (balance < valor + tax(valor)) {
+    public void sacar(BigDecimal valor){
+        if (valor.add(tax(valor)).compareTo(balance) > 0) {
             throw new SaldoInsuficienteException();
         }
-        balance -= valor + tax(valor);
+        balance = balance.subtract(valor.add(tax(valor)));
         addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance));
     }
     @Override
-    public void deposito(double valor){
-        if (tax(valor) + valor > 10000) {
+    public void deposito(BigDecimal valor){
+        if (tax(valor).add(valor).compareTo(new BigDecimal("10000")) > 0) {
             throw new LimiteExcedidoException();
         }
-        balance += valor - tax(valor);
+        balance = balance.add(valor).subtract(tax(valor));
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));
     }
 
     @Override
-    public void transferencia( Double valor, Conta contaDestino) {
-        if (balance >= valor + tax(valor)) {
-            balance -= valor + tax(valor);
+    public void transferencia( BigDecimal valor, Conta contaDestino) {
+        if (valor.add( tax(valor) ).compareTo(balance) <= 0) {
+            balance = balance.subtract(valor.add(tax(valor)));
             contaDestino.creditar(valor);
             addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, this.getBalance()));
             contaDestino.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, contaDestino.getBalance()));
@@ -40,12 +42,14 @@ public final class ContaPoupanca extends Conta implements Tax {
             throw new SaldoInsuficienteException();
         }
     }
-    public double getRendimento(){
-        return balance * JUROS_RENDIMENTO;
+    public BigDecimal getRendimento(){
+        return balance.multiply(
+                BigDecimal.valueOf(JUROS_RENDIMENTO)
+        );
     }
     @Override
-    public double tax(double valor) {
-        return valor * 0.005;
+    public BigDecimal tax(BigDecimal valor) {
+        return valor.multiply(BigDecimal.valueOf(0.01));
     }
 
 }

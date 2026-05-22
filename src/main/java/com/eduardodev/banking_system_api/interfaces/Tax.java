@@ -1,5 +1,7 @@
 package com.eduardodev.banking_system_api.interfaces;
 
+import java.math.BigDecimal;
+
 public interface Tax {
-    double tax(double valor);
+    BigDecimal tax(BigDecimal valor);
 }

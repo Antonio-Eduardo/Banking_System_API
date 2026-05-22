@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,15 +38,15 @@ public class TestConfig implements CommandLineRunner {
 
         ContaCorrente cc1 = new ContaCorrente();
         cc1.setTitular("Alice Silva");
-        cc1.setBalance(1500.00);
+        cc1.setBalance(new BigDecimal("1000.00"));
 
         ContaPoupanca cp1 = new ContaPoupanca();
         cp1.setTitular("Bob Santos");
-        cp1.setBalance(2500.00);
+        cp1.setBalance(new BigDecimal("2500.00"));
 
         ContaEmpresarial ce1 = new ContaEmpresarial();
         ce1.setTitular("Acme Ltda");
-        ce1.setBalance(50000.00);
+        ce1.setBalance(new BigDecimal("50000.00"));
 
         accountRepository.saveAll(Arrays.asList(cc1, cp1, ce1));
 
@@ -53,7 +54,7 @@ public class TestConfig implements CommandLineRunner {
 
         Transacao t1 = new Transacao();
         t1.setTipoOperacao(TipoOperacao.OPERACAO_DEPOSITO);
-        t1.setValor(1500.00);
+        t1.setValor(new BigDecimal("1000.00"));
         t1.setSaldoApos(cc1.getBalance());
         t1.setData(Instant.now());
         cc1.addTransacao(t1);
@@ -61,7 +62,7 @@ public class TestConfig implements CommandLineRunner {
 
         Transacao t2 = new Transacao();
         t2.setTipoOperacao(TipoOperacao.OPERACAO_DEPOSITO);
-        t2.setValor(2500.00);
+        t2.setValor(new BigDecimal("2500.00"));
         t2.setSaldoApos(cp1.getBalance());
         t2.setData(Instant.now());
         cp1.addTransacao(t2);
@@ -69,7 +70,7 @@ public class TestConfig implements CommandLineRunner {
 
         Transacao t3 = new Transacao();
         t3.setTipoOperacao(TipoOperacao.OPERACAO_DEPOSITO);
-        t3.setValor(10000.00);
+        t3.setValor(new BigDecimal("10000.00"));
         t3.setSaldoApos(ce1.getBalance());
         t3.setData(Instant.now());
         ce1.addTransacao(t3);
@@ -80,21 +81,21 @@ public class TestConfig implements CommandLineRunner {
         transactionRepository.saveAll(manualTxs);
 
         try {
-            cc1.sacar(200.00);
+            cc1.sacar(new BigDecimal("150.00"));
             accountRepository.save(cc1);
         } catch (Exception e) {
             System.out.println("Saque demo falhou: " + e.getMessage());
         }
 
         try {
-            cc1.transferencia(150.00, cp1);
+            cc1.transferencia(new BigDecimal("150.00"), cp1);
             accountRepository.saveAll(Arrays.asList(cc1, cp1));
         } catch (Exception e) {
             System.out.println("Transferência demo falhou: " + e.getMessage());
         }
 
         try {
-            ce1.sacar(5000.00);
+            ce1.sacar(new BigDecimal("5000.00"));
             accountRepository.save(ce1);
         } catch (Exception e) {
             System.out.println("Saque empresarial demo falhou: " + e.getMessage());

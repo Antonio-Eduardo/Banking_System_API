@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +23,7 @@ public abstract class Conta {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idConta;
     private String titular;
-    protected double balance;
+    protected BigDecimal balance;
 
 
     @JsonIgnore
@@ -34,9 +35,9 @@ public abstract class Conta {
         historicoTransacoes.add(transacao);
     }
 
-    public abstract void sacar(double valor);
-    public abstract void deposito(double valor);
-    public abstract void transferencia(Double valor, Conta contaDestino);
+    public abstract void sacar(BigDecimal valor);
+    public abstract void deposito(BigDecimal valor);
+    public abstract void transferencia(BigDecimal valor, Conta contaDestino);
 
     @JsonIgnore
     public Transacao getUltimaTransacao() {
@@ -44,8 +45,8 @@ public abstract class Conta {
         return historicoTransacoes.getLast();
     }
 
-    public void creditar(double valor){
-        balance += valor;
+    public void creditar(BigDecimal valor){
+        balance = balance.add(valor);
     }
 
     @Override
