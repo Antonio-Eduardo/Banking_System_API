@@ -1,85 +1,104 @@
-# Sistema Bancário (Java)
+# Sistema Bancário Multicliente (Java)
 
-Projeto de um sistema bancário desenvolvido em Java com foco em POO e persistência de dados. simulando operações básicas de uma instituição financeira. 
-O projeto permite a criação e gerenciamento de contas, além da realização de transações como depósitos, saques e consultas de saldo.
+![Status do Projeto](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+[![Static Badge](https://img.shields.io/badge/licenca-MIT-green)](https://github.com/Antonio-Eduardo/Sistema_Bancario/blob/master/LICENSE)
 
-# Evolução do projeto
-O projeto nasceu como um sistema simples baseado em arquivos textuais (.txt). Posteriormente, evoluiu para uma arquitetura baseada em JDBC + MySQL e, 
-atualmente, utiliza a especificação JPA com mapeamento objeto-relacional e gerenciamento automático de transações.
-## O que tem no projeto
+> Sistema de operações bancárias com 3 tipos de conta, simulando o fluxo real de uma instituição financeira.
 
-### Criação de contas
+## Índice
 
-- Conta Corrente
-- Conta Empresarial
-- Conta Poupança
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Evolução do Projeto](#evolução-do-projeto)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Regras de Negócio](#regras-de-negócio)
+- [Conceitos Aplicados](#conceitos-aplicados)
+- [Exemplo de Saída](#exemplo-de-saída)
+- [Como Executar o Projeto](#como-executar-o-projeto)
+- [Melhorias Futuras](#melhorias-futuras)
 
-### Operações
+---
 
-- Depósito
-- Saque
-- Transferência entre contas
+## Sobre o Projeto
 
-### Histórico de transações
+O **Sistema Bancário Multicliente** é uma aplicação Java com foco em Programação Orientada a Objetos e persistência de dados. O sistema permite a criação e gerenciamento de contas bancárias, realizando operações como depósitos, saques, transferências e consulta de histórico de transações.
 
-- Mapeamento Bidirecional: Cada conta possui um histórico de transações vinculadas diretamente no banco de dados, 
-ordenadas de forma cronológica decrescente.
+> *Nota de desenvolvimento:* O projeto foi construído com atenção à separação de responsabilidades entre camadas (DAO, Service, Entities), aplicando herança e polimorfismo para modelar os diferentes tipos de conta. A persistência evoluiu progressivamente de arquivos de texto até JPA/Hibernate com controle transacional manual, consolidando o entendimento de ORM e gerenciamento de transações.
 
-### Tratamento de erros
+---
 
-- Saldo insuficiente
-- Limite excedido
-- Exceções de banco de dados
+## Evolução do Projeto
 
-### Persistência de Dados (Atualizado)
+O projeto passou por três fases de evolução:
 
-- Persistência com MySQL utilizando JPA / Hibernate
-- Controle transacional automatizado via EntityManager:
-- em.getTransaction().begin() (Substitui o antigo setAutoCommit(false))
-- em.getTransaction().commit() (Grava as alterações de forma segura no banco)
-- em.getTransaction().rollback() (Desfaz as alterações em caso de erro/exceção)
+1. **Arquivos de texto (.txt)** — persistência simples para validação da lógica de negócio
+2. **JDBC + MySQL** — persistência relacional com controle manual de conexões
+3. **JPA / Hibernate** — mapeamento objeto-relacional com gerenciamento automático de transações via `EntityManager`
 
-## Estrutura
+---
 
-- `main.entities` → classes das contas e transações
-- `main.dao` → interfaces DAO
-- `main.dao.impl` → implementação JPA/Hibernate/JPQL
-- `services` → regras de negócio
-- `main.dao.db` → conexão com banco de dados
-- `main.exceptions` → tratamento de erros
-- `main` → execução no console
+## Funcionalidades
 
-## Regras de negócio
+- [x] **Criação de Contas:** Conta Corrente, Conta Empresarial e Conta Poupança
+- [x] **Depósito:** Crédito de valores com atualização de saldo
+- [x] **Saque:** Débito com validação de saldo e limites
+- [x] **Transferência:** Movimentação entre contas com consistência transacional
+- [x] **Histórico de Transações:** Registro bidirecional ordenado cronologicamente de forma decrescente
+- [x] **Tratamento de Erros:** Saldo insuficiente, limite excedido e exceções de banco de dados
 
-- Conta Corrente possui taxa fixa por operação
-- Conta Empresarial possui limite de saque
-- Conta Poupança possui comportamento diferenciado
-- Transferências utilizam transações SQL para garantir consistência dos dados
+---
 
-## Conceitos aplicados
+## Tecnologias Utilizadas
 
-- Herança
-- Polimorfismo
-- Encapsulamento
-- Abstração
-- Interfaces
-- DAO Pattern
+- **Java** (JDK 17+)
+- **JPA / Hibernate**
+- **JDBC**
+- **MySQL**
+- **Maven**
+- **Git / GitHub**
+
+---
+
+## Estrutura do Projeto
+
+```
+src/
+├── main/
+│   ├── entities/       → Classes das contas e transações
+│   ├── dao/            → Interfaces DAO
+│   ├── dao/impl/       → Implementação JPA/Hibernate/JPQL
+│   ├── dao/db/         → Conexão com banco de dados
+│   ├── exceptions/     → Tratamento de erros
+│   └── Main.java       → Execução no console
+└── services/           → Regras de negócio
+```
+
+---
+
+## Regras de Negócio
+
+- **Conta Corrente** possui taxa fixa por operação
+- **Conta Empresarial** possui limite de saque
+- **Conta Poupança** possui comportamento diferenciado de rendimento
+- **Transferências** utilizam transações SQL para garantir consistência dos dados
+
+---
+
+## Conceitos Aplicados
+
+- Herança e Polimorfismo
+- Encapsulamento e Abstração
+- Interfaces e DAO Pattern
 - Service Layer
 - Injeção de Dependência
-- JDBC Transactions
-- Separação de responsabilidades
-- JPA / Hibernate
+- Separação de Responsabilidades
+- Controle Transacional com JPA (`begin`, `commit`, `rollback`)
+- JPQL
 
-## Tecnologias utilizadas
+---
 
-- Java 17+
-- JDBC
-- MySQL
-- Git/GitHub
-- JPA / Hibernate
-- Maven
-
-## Exemplo de saída
+## Exemplo de Saída
 
 ```text
 Conta [Corrente]
@@ -88,23 +107,39 @@ Número: 1273
 Saldo: 300.00
 
 Transações:
-DEPOSITO | R$ 200.00 | Saldo: 200.00
-DEPOSITO | R$ 200.00 | Saldo: 400.00
-SAQUE | R$ 50.00 | Saldo: 350.00
+DEPOSITO      | R$ 200.00 | Saldo: 200.00
+DEPOSITO      | R$ 200.00 | Saldo: 400.00
+SAQUE         | R$ 50.00  | Saldo: 350.00
 TRANSFERENCIA | R$ 100.00 | Saldo: 250.00
 ```
 
-## Como rodar
+---
 
-1. Clonar o repositório
-2. Configurar o banco de dados MySQL
-3. Ajustar as credenciais de conexão na classe `DB.java`
-4. Executar a classe `main.java.Main.java`
+## Como Executar o Projeto
 
-## Melhorias futuras
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/Antonio-Eduardo/Sistema_Bancario.git
+   ```
 
-- API REST com Spring Boot
-- Interface gráfica
-- Testes automatizados
-- Uso de BigDecimal para operações financeiras
-- Sistema de autenticação de usuários
+2. **Acesse a pasta do projeto:**
+   ```bash
+   cd Sistema_Bancario
+   ```
+
+3. **Configure o banco de dados MySQL** e ajuste as credenciais na classe `DB.java`
+
+4. **Execute a aplicação:**
+   ```bash
+   mvn exec:java -Dexec.mainClass="main.Main"
+   ```
+
+---
+
+## Melhorias Futuras
+
+- [ ] API REST com Spring Boot
+- [ ] Testes automatizados
+- [ ] Uso de `BigDecimal` para operações financeiras
+- [ ] Sistema de autenticação de usuários
+- [ ] Interface gráfica
