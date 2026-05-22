@@ -1,6 +1,6 @@
 package com.eduardodev.banking_system_api.exceptions;
 
-import enums.ErrorCode;
+import com.eduardodev.banking_system_api.enums.ErrorCode;
 
 public class LimiteExcedidoException extends NegocioException {
 

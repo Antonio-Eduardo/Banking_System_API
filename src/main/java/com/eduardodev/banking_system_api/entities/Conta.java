@@ -1,7 +1,6 @@
 package com.eduardodev.banking_system_api.entities;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +45,7 @@ public abstract class Conta {
     public String getTitular() {
         return titular;
     }
-    public entities.Transacao getUltimaTransacao() {
+    public Transacao getUltimaTransacao() {
         if (historicoTransacoes.isEmpty()) return null;
         return historicoTransacoes.get(historicoTransacoes.size() - 1);
     }
@@ -73,7 +72,7 @@ public abstract class Conta {
         sb.append("\nnumero= ").append(idConta);
         sb.append("\nSaldo= ").append(balance);
         sb.append("\n--- Transacoes ---\n");
-        for (entities.Transacao t : historicoTransacoes){
+        for (Transacao t : historicoTransacoes){
             sb.append(t).append("\n");
         }
         return sb.toString();

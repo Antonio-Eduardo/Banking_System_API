@@ -1,6 +1,6 @@
 package com.eduardodev.banking_system_api.service;
 
-import entities.Conta;
+import com.eduardodev.banking_system_api.entities.Conta;
 
 public interface OperacaoBanco {
     public void processDeposito(Conta conta, double valor);

@@ -1,8 +1,7 @@
 package com.eduardodev.banking_system_api.entities;
 
-import enums.TipoOperacao;
+import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

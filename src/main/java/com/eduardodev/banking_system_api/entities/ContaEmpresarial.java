@@ -1,10 +1,10 @@
 package com.eduardodev.banking_system_api.entities;
 
-import enums.TipoOperacao;
-import exceptions.LimiteExcedidoException;
-import exceptions.SaldoInsuficienteException;
+import com.eduardodev.banking_system_api.enums.TipoOperacao;
+import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
+import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
+import com.eduardodev.banking_system_api.service.Tax;
 import jakarta.persistence.Entity;
-import service.Tax;
 
 @Entity
 public final class  ContaEmpresarial extends Conta implements Tax {
