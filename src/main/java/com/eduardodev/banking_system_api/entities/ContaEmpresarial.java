@@ -3,23 +3,16 @@ package com.eduardodev.banking_system_api.entities;
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
-import com.eduardodev.banking_system_api.service.Tax;
+import interfaces.Tax;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public final class  ContaEmpresarial extends Conta implements Tax {
     private double emprestimo;
-
-    public ContaEmpresarial(){}
-    public ContaEmpresarial(String titular, long idConta, double balance, double emprestimo) {
-        super(idConta, titular,balance);
-        this.emprestimo = emprestimo;
-    }
-
-    public ContaEmpresarial(String titular, double balance, double emprestimo) {
-        super(titular, balance);
-        this.emprestimo = emprestimo;
-    }
 
     @Override
     public void sacar(double valor){
@@ -61,12 +54,7 @@ public final class  ContaEmpresarial extends Conta implements Tax {
     public double tax(double valor) {
         return valor * 0.07;
     }
-    public void addEmprestimo(double valor){
-        emprestimo += valor;
-    }
-    public double getEmprestimo() {
-        return emprestimo;
-    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("\nConta [Empresa]\n");

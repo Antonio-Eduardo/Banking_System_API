@@ -1,4 +1,4 @@
-package com.eduardodev.banking_system_api.service;
+package interfaces;
 
 import com.eduardodev.banking_system_api.entities.Conta;
 

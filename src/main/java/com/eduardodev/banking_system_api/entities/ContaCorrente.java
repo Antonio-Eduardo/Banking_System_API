@@ -3,18 +3,16 @@ package com.eduardodev.banking_system_api.entities;
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
-import com.eduardodev.banking_system_api.service.Tax;
+import interfaces.Tax;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class ContaCorrente extends Conta implements Tax {
-
-    public ContaCorrente(){}
-    public ContaCorrente(String titular, double balance) {
-        super(titular, balance);
-    }
-    public ContaCorrente(String titular,Long id, double balance){super(id,titular,balance);}
 
     @Override
     public void sacar(double valor){

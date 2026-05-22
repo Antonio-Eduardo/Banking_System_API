@@ -2,10 +2,16 @@ package com.eduardodev.banking_system_api.entities;
 
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Transacao{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,60 +26,11 @@ public class Transacao{
     @JoinColumn(name = "id_conta")
     private Conta conta;
 
-    public Transacao(TipoOperacao tipoOperacao, double valor, double saldoApos) {
+    public Transacao(TipoOperacao tipoOperacao, double valor, double balance) {
         this.tipoOperacao = tipoOperacao;
         this.valor = valor;
-        this.saldoApos = saldoApos;
+        this.saldoApos = balance;
         this.data = LocalDateTime.now();
-    }
-    public Transacao() {
-    }
-
-    public Conta getConta() {
-        return conta;
-    }
-
-    public void setConta(Conta conta) {
-        this.conta = conta;
-    }
-
-    public Transacao(Long iD, TipoOperacao tipoOperacao, double valor, double saldoApos , LocalDateTime data) {
-        this.iD = iD;
-        this.tipoOperacao = tipoOperacao;
-        this.valor = valor;
-        this.data = data;
-    }
-
-    public void setTipoOperacao(TipoOperacao tipoOperacao) {
-        this.tipoOperacao = tipoOperacao;
-    }
-
-    public Long getiD() {
-        return iD;
-    }
-
-    public void setiD(Long iD) {
-        this.iD = iD;
-    }
-
-    public LocalDateTime getData() {
-        return data;
-    }
-
-    public double getSaldoApos() {
-        return saldoApos;
-    }
-
-    public TipoOperacao getTipoOperacao() {
-        return tipoOperacao;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
     }
 
     @Override
@@ -84,9 +41,5 @@ public class Transacao{
         sb.append(" |saldoApos= ").append(saldoApos);
         sb.append(" |data= ").append(data.format(fmt));
         return sb.toString();
-    }
-
-    public void setData(LocalDateTime data) {
-        this.data = data;
     }
 }

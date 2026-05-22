@@ -1,12 +1,19 @@
 package com.eduardodev.banking_system_api.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Conta {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,45 +29,17 @@ public abstract class Conta {
         historicoTransacoes.add(transacao);
     }
 
-    public Conta(){}
-
-    public Conta(String titular, double balance) {
-        this.titular = titular;
-        this.balance = balance;
-    }
-    public Conta(Long idConta, String titular, double balance) {
-        this.idConta = idConta;
-        this.titular = titular;
-        this.balance = balance;
-    }
-    public double getBalance() {
-        return balance;
-    }
     public abstract void sacar(double valor);
     public abstract void deposito(double valor);
     public abstract void transferencia( Double valor, Conta contaDestino);
-    public Long getIdConta() {
-        return idConta;
-    }
-    public String getTitular() {
-        return titular;
-    }
     public Transacao getUltimaTransacao() {
         if (historicoTransacoes.isEmpty()) return null;
-        return historicoTransacoes.get(historicoTransacoes.size() - 1);
-    }
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Conta contas)) return false;
-        return Objects.equals(idConta, contas.idConta);
+        return historicoTransacoes.getLast();
     }
     public void creditar(double valor){
         balance += valor;
     }
 
-    public void setIdConta(Long idConta) {
-        this.idConta = idConta;
-    }
 
     @Override
     public int hashCode() {

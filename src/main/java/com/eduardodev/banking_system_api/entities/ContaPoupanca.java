@@ -3,21 +3,16 @@ package com.eduardodev.banking_system_api.entities;
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
-import com.eduardodev.banking_system_api.service.Tax;
+import interfaces.Tax;
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public final class ContaPoupanca extends Conta implements Tax {
     private static final double JUROS_RENDIMENTO = 0.008;
-
-    public ContaPoupanca(){}
-    public ContaPoupanca(String titular, Long idConta, double balance) {
-        super(idConta,titular, balance);
-    }
-
-    public ContaPoupanca(String titular, double balance) {
-        super(titular, balance);
-    }
 
     @Override
     public void sacar(double valor){
