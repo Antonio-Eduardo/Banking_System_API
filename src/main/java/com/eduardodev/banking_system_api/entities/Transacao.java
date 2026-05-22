@@ -26,7 +26,7 @@ public class Transacao{
     private TipoOperacao tipoOperacao;
     private double valor;
     private double saldoApos;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy'T'HH:mm:ss'Z'", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Fortaleza")
     private Instant data;
 
     @ManyToOne
