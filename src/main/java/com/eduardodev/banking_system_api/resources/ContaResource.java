@@ -5,8 +5,10 @@ import com.eduardodev.banking_system_api.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -34,7 +36,8 @@ public class ContaResource {
     @PostMapping
     public ResponseEntity<Conta> createAccount(@RequestBody Conta conta) {
         Conta createdConta = accountService.createAccount(conta);
-        return ResponseEntity.ok().body(createdConta);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getIdConta()).toUri();
+        return ResponseEntity.created(uri).body(createdConta);
     }
     @PutMapping(value = "/deposit/{id}")
     public ResponseEntity<Conta> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
