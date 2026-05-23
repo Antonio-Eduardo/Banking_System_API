@@ -187,7 +187,7 @@ src/
 
 - [ ] Endpoint de transferência entre contas via REST
 - [ ] Tratamento global de exceções com `@ControllerAdvice`
-- [ ] Testes de integração com Testcontainers
+- [x] Testes de integração com Testcontainers (13 testes, PostgreSQL via Testcontainers)
 - [ ] Documentação com Swagger / OpenAPI
 - [ ] Autenticação com Spring Security
 - [ ] Paginação nos endpoints de listagem
