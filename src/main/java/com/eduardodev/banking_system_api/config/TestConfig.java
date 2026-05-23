@@ -76,7 +76,6 @@ public class TestConfig implements CommandLineRunner {
         ce1.addTransacao(t3);
         manualTxs.add(t3);
 
-
         accountRepository.saveAll(Arrays.asList(cc1, cp1, ce1));
         transactionRepository.saveAll(manualTxs);
 
@@ -86,21 +85,18 @@ public class TestConfig implements CommandLineRunner {
         } catch (Exception e) {
             System.out.println("Saque demo falhou: " + e.getMessage());
         }
-
         try {
             cc1.transferencia(new BigDecimal("150.00"), cp1);
             accountRepository.saveAll(Arrays.asList(cc1, cp1));
         } catch (Exception e) {
             System.out.println("Transferência demo falhou: " + e.getMessage());
         }
-
         try {
             ce1.sacar(new BigDecimal("5000.00"));
             accountRepository.save(ce1);
         } catch (Exception e) {
             System.out.println("Saque empresarial demo falhou: " + e.getMessage());
         }
-
         System.out.println("Seed finalizado:");
         accountRepository.findAll().forEach(a -> {
             System.out.println("Conta: " + a.getTitular() + " - Saldo: " + a.getBalance());

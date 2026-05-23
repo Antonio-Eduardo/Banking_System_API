@@ -25,7 +25,9 @@ public class Transacao{
     private Long iD;
     @Enumerated(EnumType.STRING)
     private TipoOperacao tipoOperacao;
+    @Column(precision = 10, scale = 2)
     private BigDecimal valor;
+    @Column(precision = 10, scale = 2)
     private BigDecimal saldoApos;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Fortaleza")
     private Instant data;

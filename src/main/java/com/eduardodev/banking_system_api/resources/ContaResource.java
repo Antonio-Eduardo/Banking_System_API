@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 @RestController
-@RequestMapping("/contas")
+@RequestMapping("/accounts")
 public class ContaResource {
 
     @Autowired
@@ -36,12 +36,19 @@ public class ContaResource {
         Conta createdConta = accountService.createAccount(conta);
         return ResponseEntity.ok().body(createdConta);
     }
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<Conta> updateAccount(@PathVariable Long id, @RequestBody Conta conta) {
-        Conta existingConta = accountService.findAccountById(id);
-        if (existingConta != null) {
-            conta.setIdConta(id);
-            Conta updatedConta = accountService.updateAccount(conta);
+    @PutMapping(value = "/deposit/{id}")
+    public ResponseEntity<Conta> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
+        Conta updatedConta = accountService.updateDeposit(id, valor);
+        if (updatedConta != null) {
+            return ResponseEntity.ok().body(updatedConta);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping(value = "/saque/{id}")
+    public ResponseEntity<Conta> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
+        Conta updatedConta = accountService.updateSaque(id, valor);
+        if (updatedConta != null) {
             return ResponseEntity.ok().body(updatedConta);
         } else {
             return ResponseEntity.notFound().build();

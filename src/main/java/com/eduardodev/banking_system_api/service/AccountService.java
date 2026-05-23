@@ -25,14 +25,12 @@ public class AccountService {
     public Conta findAccountById(Long id) {
         return accountRepository.findById(id).orElse(null);
     }
-    public Conta updateAccount(Conta conta) {
-        return accountRepository.save(conta);
-    }
     public List<Conta> findAllAccounts() {
         return new ArrayList<>(accountRepository.findAll());
     }
-    public Conta updateDeposit(Conta conta, BigDecimal amount) {
-        Conta existingConta = accountRepository.findById(conta.getIdConta()).orElse(null);
+
+    public Conta updateDeposit(Long id, BigDecimal amount) {
+        Conta existingConta = accountRepository.findById(id).orElse(null);
         if (existingConta != null) {
             existingConta.deposito(amount);
             return accountRepository.save(existingConta);
@@ -40,6 +38,14 @@ public class AccountService {
             return null;
         }
     }
+    public Conta updateSaque(Long id, BigDecimal amount) {
+        Conta existingConta = accountRepository.findById(id).orElse(null);
+        if (existingConta != null) {
+            existingConta.sacar(amount);
+            return accountRepository.save(existingConta);
+        } else {
+            return null;
 
-
+        }
+    }
 }

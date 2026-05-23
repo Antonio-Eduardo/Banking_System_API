@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @NoArgsConstructor
@@ -49,7 +50,9 @@ public final class ContaPoupanca extends Conta implements Tax {
     }
     @Override
     public BigDecimal tax(BigDecimal valor) {
-        return valor.multiply(BigDecimal.valueOf(0.01));
+        return valor
+                .multiply(new BigDecimal("0.02"))
+                .setScale(2, RoundingMode.HALF_EVEN);
     }
 
 }

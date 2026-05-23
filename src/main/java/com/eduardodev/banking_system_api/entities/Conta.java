@@ -23,6 +23,7 @@ public abstract class Conta {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idConta;
     private String titular;
+    @Column(precision = 10, scale = 2)
     protected BigDecimal balance;
 
 
