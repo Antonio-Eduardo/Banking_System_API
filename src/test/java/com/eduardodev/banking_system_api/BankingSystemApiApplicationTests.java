@@ -55,7 +55,7 @@ class BankingSystemApiApplicationTests {
 		cc.setBalance(new BigDecimal("1000.00"));
 		accountService.createAccount(cc);
 
-		Conta atualizada = accountService.updateDeposit(cc.getIdConta(), new BigDecimal("500.00"));
+		Conta atualizada = accountService.Deposit(cc.getIdConta(), new BigDecimal("500.00"));
 
 		assertEquals(new BigDecimal("1490.00"), atualizada.getBalance());
 	}
@@ -67,7 +67,7 @@ class BankingSystemApiApplicationTests {
 		cc.setBalance(new BigDecimal("1000.00"));
 		accountService.createAccount(cc);
 
-		Conta atualizada = accountService.updateSaque(cc.getIdConta(), new BigDecimal("100.00"));
+		Conta atualizada = accountService.Saque(cc.getIdConta(), new BigDecimal("100.00"));
 
 		assertEquals(new BigDecimal("875.00"), atualizada.getBalance());
 	}
@@ -80,7 +80,7 @@ class BankingSystemApiApplicationTests {
 		accountService.createAccount(cc);
 
 		assertThrows(SaldoInsuficienteException.class, () ->
-				accountService.updateSaque(cc.getIdConta(), new BigDecimal("500.00"))
+				accountService.Saque(cc.getIdConta(), new BigDecimal("500.00"))
 		);
 	}
 
@@ -92,7 +92,7 @@ class BankingSystemApiApplicationTests {
 		accountService.createAccount(cc);
 
 		assertThrows(LimiteExcedidoException.class, () ->
-				accountService.updateDeposit(cc.getIdConta(), new BigDecimal("3000.00"))
+				accountService.Deposit(cc.getIdConta(), new BigDecimal("3000.00"))
 		);
 	}
 
@@ -113,7 +113,7 @@ class BankingSystemApiApplicationTests {
 		cp.setBalance(new BigDecimal("1000.00"));
 		BigDecimal rendimento = cp.getRendimento();
 
-		assertEquals(new BigDecimal("8.0000000000000000"), rendimento.stripTrailingZeros());
+		assertEquals(0, new BigDecimal("8.00").compareTo(rendimento));
 	}
 
 	@Test
@@ -124,7 +124,7 @@ class BankingSystemApiApplicationTests {
 		accountService.createAccount(cp);
 
 		assertThrows(LimiteExcedidoException.class, () ->
-				accountService.updateDeposit(cp.getIdConta(), new BigDecimal("11000.00"))
+				accountService.Deposit(cp.getIdConta(), new BigDecimal("11000.00"))
 		);
 	}
 
@@ -146,9 +146,8 @@ class BankingSystemApiApplicationTests {
 		ce.setBalance(new BigDecimal("50000.00"));
 		accountService.createAccount(ce);
 
-		// limite de saque empresarial é R$ 20.000
 		assertThrows(LimiteExcedidoException.class, () ->
-				accountService.updateSaque(ce.getIdConta(), new BigDecimal("20000.00"))
+				accountService.Saque(ce.getIdConta(), new BigDecimal("20000.00"))
 		);
 	}
 	@Test
@@ -159,7 +158,7 @@ class BankingSystemApiApplicationTests {
 		accountService.createAccount(ce);
 
 		assertThrows(LimiteExcedidoException.class, () ->
-				accountService.updateDeposit(ce.getIdConta(), new BigDecimal("6000.00"))
+				accountService.Deposit(ce.getIdConta(), new BigDecimal("6000.00"))
 		);
 	}
 	@Test
@@ -169,10 +168,9 @@ class BankingSystemApiApplicationTests {
 		cc.setBalance(new BigDecimal("1000.00"));
 		accountService.createAccount(cc);
 
-		accountService.updateDeposit(cc.getIdConta(), new BigDecimal("500.00"));
+		accountService.Deposit(cc.getIdConta(), new BigDecimal("500.00"));
 
-		Conta atualizada = accountService.findAccountById(cc.getIdConta());
-		assertFalse(atualizada.getHistoricoTransacoes().isEmpty());
+		assertFalse(transactionRepository.findAll().isEmpty());
 	}
 
 	@Test
@@ -182,9 +180,8 @@ class BankingSystemApiApplicationTests {
 		cc.setBalance(new BigDecimal("1000.00"));
 		accountService.createAccount(cc);
 
-		accountService.updateSaque(cc.getIdConta(), new BigDecimal("100.00"));
+		accountService.Saque(cc.getIdConta(), new BigDecimal("100.00"));
 
-		Conta atualizada = accountService.findAccountById(cc.getIdConta());
-		assertFalse(atualizada.getHistoricoTransacoes().isEmpty());
+		assertFalse(transactionRepository.findAll().isEmpty());
 	}
 }

@@ -38,6 +38,13 @@ public final class  ContaEmpresarial extends Conta implements Tax {
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));;
     }
 
+    public BigDecimal getEmprestimoPers() {
+        return emprestimo;
+    }
+
+    public void setEmprestimoPers(BigDecimal emprestimo) {
+        this.emprestimo = emprestimo;
+    }
 
     @Override
     public void transferencia( BigDecimal valor, Conta contaDestino) {

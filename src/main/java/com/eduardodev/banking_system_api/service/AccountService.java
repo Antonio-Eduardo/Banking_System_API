@@ -4,6 +4,7 @@ import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ public class AccountService {
         return new ArrayList<>(accountRepository.findAll());
     }
 
-    public Conta updateDeposit(Long id, BigDecimal amount) {
+    @Transactional
+    public Conta Deposit(Long id, BigDecimal amount) {
         Conta existingConta = accountRepository.findById(id).orElse(null);
         if (existingConta != null) {
             existingConta.deposito(amount);
@@ -38,7 +40,8 @@ public class AccountService {
             return null;
         }
     }
-    public Conta updateSaque(Long id, BigDecimal amount) {
+    @Transactional
+    public Conta Saque(Long id, BigDecimal amount) {
         Conta existingConta = accountRepository.findById(id).orElse(null);
         if (existingConta != null) {
             existingConta.sacar(amount);
@@ -46,6 +49,19 @@ public class AccountService {
         } else {
             return null;
 
+        }
+    }
+    @Transactional
+    public Conta Transferencia(Long idOrigem, Long idDestino, BigDecimal amount) {
+        Conta contaOrigem = accountRepository.findById(idOrigem).orElse(null);
+        Conta contaDestino = accountRepository.findById(idDestino).orElse(null);
+        if (contaOrigem != null && contaDestino != null) {
+            contaOrigem.sacar(amount);
+            contaDestino.deposito(amount);
+            accountRepository.save(contaOrigem);
+            return accountRepository.save(contaDestino);
+        } else {
+            return null;
         }
     }
 }

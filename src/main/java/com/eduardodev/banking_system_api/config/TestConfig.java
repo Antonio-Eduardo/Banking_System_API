@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@Profile("test")
+@Profile("dev")
 public class TestConfig implements CommandLineRunner {
 
     @Autowired
@@ -47,6 +47,8 @@ public class TestConfig implements CommandLineRunner {
         ContaEmpresarial ce1 = new ContaEmpresarial();
         ce1.setTitular("Acme Ltda");
         ce1.setBalance(new BigDecimal("50000.00"));
+        ce1.setEmprestimoPers(new BigDecimal("10000.00"));
+
 
         accountRepository.saveAll(Arrays.asList(cc1, cp1, ce1));
 

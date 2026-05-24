@@ -29,7 +29,7 @@ public class ContaCorrente extends Conta implements Tax {
     }
     @Override
     public void deposito(BigDecimal valor){
-        if (tax(valor).add(valor).compareTo(new BigDecimal("2500"))>0) {
+        if (tax(valor).add(valor).compareTo(new BigDecimal("10000"))>0) {
             throw new LimiteExcedidoException();
         }
         balance = balance.add(valor).subtract(tax(valor));

@@ -41,7 +41,7 @@ public class ContaResource {
     }
     @PutMapping(value = "/deposit/{id}")
     public ResponseEntity<Conta> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.updateDeposit(id, valor);
+        Conta updatedConta = accountService.Deposit(id, valor);
         if (updatedConta != null) {
             return ResponseEntity.ok().body(updatedConta);
         } else {
@@ -50,7 +50,21 @@ public class ContaResource {
     }
     @PutMapping(value = "/saque/{id}")
     public ResponseEntity<Conta> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.updateSaque(id, valor);
+        Conta updatedConta = accountService.Saque(id, valor);
+        if (updatedConta != null) {
+            return ResponseEntity.ok().body(updatedConta);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping(value = "/delete/{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/transf/{idOrigem}/{idDestino}")
+    public ResponseEntity<Conta> updateTransferencia(@PathVariable Long idOrigem, @PathVariable Long idDestino, @RequestBody BigDecimal valor) {
+        Conta updatedConta = accountService.Transferencia(idOrigem, idDestino, valor);
         if (updatedConta != null) {
             return ResponseEntity.ok().body(updatedConta);
         } else {
