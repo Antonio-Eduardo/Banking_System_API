@@ -26,7 +26,7 @@
 
 O **Sistema Bancário API** é uma aplicação Java com foco em Programação Orientada a Objetos, persistência de dados e arquitetura REST. O sistema gerencia contas bancárias e registra operações como depósitos, saques, transferências e histórico de transações.
 
-O projeto evoluiu de um sistema de console até uma API REST completa com Spring Boot, utilizando PostgreSQL como banco de dados e Docker para gerenciamento do ambiente.
+O projeto evoluiu de um sistema de console até uma API REST completa com Spring Boot, utilizando PostgreSQL como banco de dados e Docker para gerenciamento do ambiente. Todas as operações financeiras utilizam `BigDecimal` para garantir precisão nos cálculos.
 
 ---
 
@@ -35,17 +35,18 @@ O projeto evoluiu de um sistema de console até uma API REST completa com Spring
 1. **Arquivos de texto (.txt)** — persistência simples para validar a lógica de negócio
 2. **JDBC + MySQL** — persistência relacional com controle manual de conexões
 3. **JPA / Hibernate** — mapeamento objeto-relacional com controle transacional via `EntityManager`
-4. **Spring Boot + REST API** — exposição dos dados via endpoints HTTP, com Spring Data JPA e PostgreSQL rodando em Docker
+4. **Spring Boot + REST API** — endpoints HTTP com Spring Data JPA, PostgreSQL via Docker e `BigDecimal` para precisão financeira
 
 ---
 
 ## Funcionalidades
 
-- [x] Criação de contas: Corrente, Empresarial e Poupança
+- [x] Criação de contas via endpoint REST
 - [x] Depósito com atualização de saldo
 - [x] Saque com validação de saldo e limites
 - [x] Transferência entre contas com consistência transacional
-- [x] Histórico de transações ordenado cronologicamente
+- [x] Histórico de transações por conta
+- [x] Listagem de todas as transações
 - [x] Tratamento de erros: saldo insuficiente, limite excedido, exceções de banco
 
 ---
@@ -54,11 +55,12 @@ O projeto evoluiu de um sistema de console até uma API REST completa com Spring
 
 - **Java 25 / Spring Boot 4**
 - **Spring Data JPA / Hibernate**
-- **PostgreSQL** (rodando via Docker)
+- **PostgreSQL** (via Docker)
 - **Docker / Docker Desktop**
 - **Lombok**
-- **Maven**
+- **BigDecimal** (precisão financeira)
 - **Testcontainers** (testes de integração)
+- **Maven**
 - **Git / GitHub**
 
 ---
@@ -69,27 +71,37 @@ O projeto evoluiu de um sistema de console até uma API REST completa com Spring
 src/
 └── main/
     └── java/com/eduardodev/banking_system_api/
-        ├── config/         → Seed de dados (TestConfig)
-        ├── entities/       → Conta, ContaCorrente, ContaPoupanca, ContaEmpresarial, Transacao
-        ├── enums/          → TipoOperacao, ErrorCode
-        ├── exceptions/     → NegocioException, SaldoInsuficienteException, LimiteExcedidoException, DBException
-        ├── interfaces/     → OperacaoBanco, Tax
-        ├── interfaces/impl → OperacaoBancoImpl (controle transacional legado)
-        ├── repository/     → AccountRepository, TransactionRepository
-        ├── resources/      → ContaResource, TransactionResource (Controllers REST)
-        └── service/        → AccountService, TransactionService
+        ├── config/           → Seed de dados para perfil de teste (TestConfig)
+        ├── entities/         → Conta (abstrata), ContaCorrente, ContaPoupanca, ContaEmpresarial, Transacao
+        ├── enums/            → TipoOperacao, TipoConta, ErrorCode
+        ├── exceptions/       → NegocioException, SaldoInsuficienteException, LimiteExcedidoException, DBException, ValidacaoException
+        ├── interfaces/       → OperacaoBanco, Tax
+        ├── interfaces/impl/  → OperacaoBancoImpl
+        ├── repository/       → AccountRepository, TransactionRepository
+        ├── resources/        → ContaResource, TransactionResource (controllers REST)
+        └── service/          → AccountService, TransactionService
 ```
 
 ---
 
 ## Endpoints
 
-| Método | Endpoint             | Descrição                        |
-|--------|----------------------|----------------------------------|
-| GET    | `/contas`            | Lista todas as contas            |
-| GET    | `/contas/{id}`       | Busca uma conta por ID           |
-| GET    | `/transactions`      | Lista todas as transações        |
-| GET    | `/transactions/{id}` | Busca uma transação por ID       |
+### Contas — `/accounts`
+
+| Método | Endpoint                   | Descrição                        |
+|--------|----------------------------|----------------------------------|
+| GET    | `/accounts`                | Lista todas as contas            |
+| GET    | `/accounts/{id}`           | Busca uma conta por ID           |
+| POST   | `/accounts`                | Cria uma nova conta              |
+| PUT    | `/accounts/deposit/{id}`   | Realiza um depósito na conta     |
+| PUT    | `/accounts/saque/{id}`     | Realiza um saque na conta        |
+
+### Transações — `/transactions`
+
+| Método | Endpoint              | Descrição                        |
+|--------|-----------------------|----------------------------------|
+| GET    | `/transactions`       | Lista todas as transações        |
+| GET    | `/transactions/{id}`  | Busca uma transação por ID       |
 
 > A aplicação roda por padrão na porta `8081`.
 
@@ -97,10 +109,25 @@ src/
 
 ## Regras de Negócio
 
-- **Conta Corrente** — taxa fixa de R$25,00 por saque; taxa de 2% sobre depósitos e transferências
-- **Conta Empresarial** — taxa fixa de R$50,00 por saque; taxa de 7% sobre depósitos e transferências; limite de saque de R$20.000
-- **Conta Poupança** — taxa de 0,5% por operação; depósitos limitados a R$10.000; rendimento de 0,8% sobre o saldo
-- **Transferências** — utilizam controle transacional para garantir consistência entre as contas
+### Conta Corrente
+- Taxa de **2%** sobre depósitos e transferências
+- Taxa fixa de **R$ 25,00** por saque
+- Limite máximo de depósito: **R$ 2.500,00**
+- Limite máximo de saque: **R$ 20.000,00**
+
+### Conta Empresarial
+- Taxa de **2%** sobre depósitos, saques e transferências
+- Limite máximo de depósito: **R$ 5.000,00**
+- Limite máximo de saque: **R$ 20.000,00**
+
+### Conta Poupança
+- Taxa de **2%** por operação
+- Limite máximo de depósito: **R$ 10.000,00**
+- Rendimento de **0,8%** sobre o saldo (`getRendimento()`)
+
+### Geral
+- Todas as operações financeiras utilizam `BigDecimal` com escala 2 e arredondamento `HALF_EVEN`
+- Transferências atualizam saldo de origem e destino e registram transação em ambas as contas
 
 ---
 
@@ -108,13 +135,13 @@ src/
 
 - Herança e Polimorfismo
 - Encapsulamento e Abstração
-- Interfaces e DAO Pattern
+- Interfaces (`Tax`, `OperacaoBanco`) e DAO Pattern
 - Service Layer
 - Injeção de Dependência (Spring)
 - Separação de Responsabilidades
-- Controle Transacional com JPA
-- Spring Data JPA / JPQL
+- Spring Data JPA
 - REST com Spring MVC
+- `BigDecimal` para operações financeiras precisas
 
 ---
 
@@ -143,26 +170,25 @@ src/
      -d postgres:16-alpine
    ```
 
-3. **Configure as credenciais** em `src/main/resources/application.properties` se necessário.
-
-4. **Execute a aplicação:**
+3. **Execute a aplicação:**
    ```bash
    mvn spring-boot:run
    ```
 
-5. **Acesse a API:**
+4. **Acesse a API:**
    ```
-   http://localhost:8081/contas
-   http://localhost:8081/transactions
+   GET  http://localhost:8081/accounts
+   GET  http://localhost:8081/transactions
    ```
 
 ---
 
 ## Melhorias Futuras
 
-- [ ] Endpoints de operações (depósito, saque, transferência) via POST
-- [ ] Testes automatizados com Testcontainers
-- [ ] Uso de `BigDecimal` para operações financeiras
-- [ ] Sistema de autenticação (Spring Security)
-- [ ] Documentação com Swagger/OpenAPI
+- [ ] Endpoint de transferência entre contas via REST
+- [ ] Tratamento global de exceções com `@ControllerAdvice`
+- [x] Testes de integração com Testcontainers (13 testes, PostgreSQL via Testcontainers)
+- [ ] Documentação com Swagger / OpenAPI
+- [ ] Autenticação com Spring Security
+- [ ] Paginação nos endpoints de listagem
 - [ ] Interface gráfica
