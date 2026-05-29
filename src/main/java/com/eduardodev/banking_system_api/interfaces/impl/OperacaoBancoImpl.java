@@ -5,9 +5,11 @@ import com.eduardodev.banking_system_api.exceptions.DBException;
 import com.eduardodev.banking_system_api.interfaces.OperacaoBanco;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Service
 public class OperacaoBancoImpl implements OperacaoBanco {
 
 
