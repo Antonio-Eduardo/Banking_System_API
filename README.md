@@ -1,12 +1,15 @@
-# Sistema Bancário API
+# Banking System API
 
-![Status do Projeto](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![Status do Projeto](https://img.shields.io/badge/status-production-brightgreen)
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-brightgreen)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
-[![Licença MIT](https://img.shields.io/badge/licenca-MIT-green)](https://github.com/Antonio-Eduardo/Sistema_Bancario/blob/master/LICENSE)
+[![Deploy](https://img.shields.io/badge/Railway-online-blueviolet)](https://bankingsystemapi-production.up.railway.app)
+[![Licença MIT](https://img.shields.io/badge/licenca-MIT-green)](LICENSE)
 
-> API REST de operações bancárias com 3 tipos de conta, regras de negócio distintas por tipo, testes de integração com Testcontainers e persistência em PostgreSQL via Docker.
+> API REST de operações bancárias com 3 tipos de conta, regras de negócio distintas por tipo, 13 testes de integração com Testcontainers e persistência em PostgreSQL. Deploy ativo no Railway.
+
+**[→ API em produção](https://bankingsystemapi-production.up.railway.app)**
 
 ---
 
@@ -16,7 +19,6 @@
 - [Evolução do Projeto](#evolução-do-projeto)
 - [Funcionalidades](#funcionalidades)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Estrutura do Projeto](#estrutura-do-projeto)
 - [Endpoints](#endpoints)
 - [Regras de Negócio](#regras-de-negócio)
 - [Conceitos Aplicados](#conceitos-aplicados)
@@ -28,9 +30,9 @@
 
 ## Sobre o Projeto
 
-O **Sistema Bancário API** é uma aplicação Java com foco em Programação Orientada a Objetos, persistência de dados e arquitetura REST. O sistema gerencia três tipos de conta bancária com regras de negócio distintas — corrente, poupança e empresarial — e registra todas as operações financeiras como depósitos, saques e transferências.
+O **Banking System API** é uma API REST para operações bancárias com três tipos de conta — Corrente, Poupança e Empresarial — cada um com regras de negócio distintas. Todas as operações financeiras usam `BigDecimal` com arredondamento `HALF_EVEN` para precisão financeira. O controle transacional é gerenciado pelo Spring via `@Transactional`, com rollback automático em caso de exceção.
 
-A hierarquia de contas é modelada com herança (`SINGLE_TABLE`) e polimorfismo: cada tipo implementa suas próprias regras de taxa, limite e operação. Todas as operações financeiras utilizam `BigDecimal` com arredondamento `HALF_EVEN`, garantindo precisão financeira. O controle transacional é gerenciado pelo Spring via `@Transactional`, assegurando rollback automático em caso de exceção.
+A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo — cada tipo implementa suas próprias regras de taxa, limite e operação.
 
 ---
 
@@ -41,7 +43,7 @@ A hierarquia de contas é modelada com herança (`SINGLE_TABLE`) e polimorfismo:
 | 1 | Arquivos `.txt` | Validação da lógica de negócio |
 | 2 | JDBC + MySQL | Persistência relacional, controle manual de conexões |
 | 3 | JPA / Hibernate | Mapeamento O/R, `EntityManager`, JPQL |
-| 4 | **Spring Boot + REST API** | Endpoints HTTP, Spring Data JPA, PostgreSQL via Docker, `BigDecimal`, testes de integração com Testcontainers |
+| 4 | **Spring Boot + REST API** | Endpoints HTTP, Spring Data JPA, PostgreSQL, `BigDecimal`, Testcontainers |
 
 ---
 
@@ -51,13 +53,11 @@ A hierarquia de contas é modelada com herança (`SINGLE_TABLE`) e polimorfismo:
 - [x] Depósito com aplicação de taxa por tipo de conta
 - [x] Saque com validação de saldo e limites por tipo de conta
 - [x] Transferência entre contas com débito na origem e crédito no destino
-- [x] Exclusão de conta por ID
-- [x] Histórico de transações vinculado a cada conta (mapeamento bidirecional `@OneToMany`)
-- [x] Listagem de todas as contas e transações
+- [x] Histórico de transações bidirecional por conta (`@OneToMany`)
 - [x] Rendimento automático na conta poupança (`getRendimento()`)
-- [x] Hierarquia de exceções com `ErrorCode` enum: `SaldoInsuficienteException`, `LimiteExcedidoException`, `DBException`, `ValidacaoException`
+- [x] Hierarquia de exceções com `ErrorCode` enum
 - [x] Seed de dados automático no perfil `dev` via `CommandLineRunner`
-- [x] Testes de integração com Testcontainers (13 testes, PostgreSQL real em container)
+- [x] 13 testes de integração com Testcontainers (PostgreSQL real em container)
 
 ---
 
@@ -70,58 +70,58 @@ A hierarquia de contas é modelada com herança (`SINGLE_TABLE`) e polimorfismo:
 | Spring Data JPA | — | Repositórios e persistência |
 | Spring Validation | — | Validação de dados de entrada |
 | Hibernate | — | ORM, estratégia `SINGLE_TABLE` |
-| PostgreSQL | 16 | Banco de dados de produção |
-| Docker | — | Container do banco de dados |
+| PostgreSQL | 16 | Banco de dados |
+| Docker | — | Container do banco de dados (dev) |
 | Testcontainers | 1.19.8 | PostgreSQL real nos testes de integração |
-| Lombok | — | `@Data`, `@NoArgsConstructor`, `@AllArgsConstructor` |
-| BigDecimal | — | Precisão financeira com `HALF_EVEN` |
+| Lombok | — | Redução de boilerplate |
 | Maven | — | Gerenciamento de dependências |
-
----
-
-## Estrutura do Projeto
-
-```
-src/
-├── main/
-│   └── java/com/eduardodev/banking_system_api/
-│       ├── config/
-│       ├── entities/
-│       ├── enums/
-│       ├── exceptions/
-│       ├── interfaces/
-│       │   └── impl/
-│       ├── repository/
-│       ├── resources/
-│       └── service/
-└── test/
-    └── java/com/eduardodev/banking_system_api/
-```
 
 ---
 
 ## Endpoints
 
-> A aplicação roda por padrão na porta `8081`.
+> Base URL em produção: `https://bankingsystemapi-production.up.railway.app`
 
 ### Contas — `/accounts`
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
-| `GET` | `/accounts` | Lista todas as contas |
-| `GET` | `/accounts/{id}` | Busca uma conta por ID |
-| `POST` | `/accounts` | Cria uma nova conta |
-| `PUT` | `/accounts/deposit/{id}` | Realiza um depósito na conta |
-| `PUT` | `/accounts/saque/{id}` | Realiza um saque na conta |
-| `PUT` | `/accounts/transf/{idOrigem}/{idDestino}` | Transferência entre contas |
-| `PUT` | `/accounts/delete/{id}` | Remove uma conta por ID |
+| GET | `/accounts` | Lista todas as contas |
+| GET | `/accounts/{id}` | Busca uma conta por ID |
+| POST | `/accounts` | Cria uma nova conta |
+| PUT | `/accounts/deposit/{id}` | Realiza um depósito |
+| PUT | `/accounts/saque/{id}` | Realiza um saque |
+| PUT | `/accounts/transf/{idOrigem}/{idDestino}` | Transferência entre contas |
+| PUT | `/accounts/delete/{id}` | Remove uma conta |
 
 ### Transações — `/transactions`
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
-| `GET` | `/transactions` | Lista todas as transações |
-| `GET` | `/transactions/{id}` | Busca uma transação por ID |
+| GET | `/transactions` | Lista todas as transações |
+| GET | `/transactions/{id}` | Busca uma transação por ID |
+
+### Exemplo de requisição
+
+```http
+POST /accounts
+Content-Type: application/json
+
+{
+  "titular": "João Silva",
+  "saldo": 1000.00,
+  "tipo": "CORRENTE"
+}
+```
+
+```http
+PUT /accounts/deposit/1
+Content-Type: application/json
+
+{
+  "valor": 500.00
+}
+```
 
 ---
 
@@ -130,45 +130,38 @@ src/
 ### Conta Corrente
 - Taxa de **2%** sobre depósitos e transferências
 - Taxa fixa de **R$ 25,00** por saque
-- Limite máximo por depósito (valor + taxa): **R$ 10.000,00**
+- Limite máximo por depósito: **R$ 10.000,00**
 - Limite máximo por saque: **R$ 20.000,00**
-- Lança `SaldoInsuficienteException` se saldo insuficiente
-- Lança `LimiteExcedidoException` se valor ultrapassa os limites
 
 ### Conta Poupança
 - Taxa de **2%** em todas as operações
-- Limite máximo por depósito (valor + taxa): **R$ 10.000,00**
-- Rendimento de **0,8%** sobre o saldo atual (`getRendimento()`)
+- Limite máximo por depósito: **R$ 10.000,00**
+- Rendimento de **0,8%** sobre o saldo atual
 
 ### Conta Empresarial
 - Taxa de **2%** em todas as operações
-- Limite máximo por depósito (valor + taxa): **R$ 5.000,00**
+- Limite máximo por depósito: **R$ 5.000,00**
 - Limite máximo por saque: **R$ 20.000,00**
-- Campo adicional `emprestimo` personalizado por conta
+- Campo adicional `emprestimo`
 
 ### Geral
-- Todas as operações usam `BigDecimal` com escala 2 e arredondamento `HALF_EVEN`
-- Cada operação registra uma `Transacao` com tipo, valor, saldo pós-operação e timestamp (`Instant`)
-- Transferências registram transação em **ambas** as contas (origem e destino)
-- Controle transacional via `@Transactional` — rollback automático em `RuntimeException`
-- Herança mapeada com `SINGLE_TABLE`: todas as contas na mesma tabela
+- `BigDecimal` com escala 2 e arredondamento `HALF_EVEN` em todas as operações
+- Cada operação registra uma `Transacao` com tipo, valor, saldo pós-operação e timestamp
+- Transferências registram transação em **ambas** as contas
+- Rollback automático via `@Transactional` em `RuntimeException`
 
 ---
 
 ## Conceitos Aplicados
 
 - Herança com `@Inheritance(strategy = SINGLE_TABLE)` e polimorfismo
-- Encapsulamento e Abstração (`Conta` abstrata com métodos abstratos)
-- Interfaces (`Tax`, `OperacaoBanco`) e separação de contratos
-- Service Layer com `@Service` e `@Transactional`
-- Injeção de Dependência via Spring IoC (`@Autowired`)
+- Abstração (`Conta` abstrata com métodos abstratos por tipo)
+- Interfaces (`Tax`, `OperacaoBanco`) para separação de contratos
+- Injeção de dependência via Spring IoC
 - Separação de responsabilidades: Controller → Service → Repository → Entity
-- Spring Data JPA com repositórios genéricos (`JpaRepository`)
-- REST com Spring MVC (`@RestController`, `@GetMapping`, `@PostMapping`, `@PutMapping`)
-- Hierarquia de exceções com `ErrorCode` enum
-- `@JsonIgnore`, `@JsonPropertyOrder`, `@JsonFormat` para controle de serialização JSON
+- Histórico bidirecional de transações com `@OneToMany`
 - Seed de dados com `CommandLineRunner` no perfil `dev`
-- Testes de integração com `@SpringBootTest`, `@ActiveProfiles`, `@BeforeEach`, Testcontainers
+- Testes de integração com `@SpringBootTest`, `@ActiveProfiles`, Testcontainers
 
 ---
 
@@ -180,15 +173,11 @@ src/
 - Docker Desktop
 - Maven
 
-### Passos
-
-**1. Clone o repositório:**
 ```bash
-git clone https://github.com/Antonio-Eduardo/Sistema_Bancario.git
-cd Sistema_Bancario
+git clone https://github.com/Antonio-Eduardo/Banking_System_API.git
+cd Banking_System_API
 ```
 
-**2. Suba o banco de dados com Docker:**
 ```bash
 docker run --name banking-postgres \
   -e POSTGRES_PASSWORD=minhasenha \
@@ -197,38 +186,29 @@ docker run --name banking-postgres \
   -d postgres:16-alpine
 ```
 
-**3. Execute com perfil de desenvolvimento (inclui seed de dados):**
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-**4. Acesse a API:**
-```
-GET  http://localhost:8081/accounts
-GET  http://localhost:8081/transactions
-```
+A API estará disponível em `http://localhost:8081`.
 
 ---
 
 ## Testes
 
-O projeto possui **13 testes de integração** usando `@SpringBootTest` com perfil `test` e Testcontainers — o Spring sobe completo contra um PostgreSQL real em container, sem banco em memória.
-
 ```bash
 mvn test
 ```
 
-### Cobertura
-
 | Cenário testado | Status |
 |----------------|--------|
 | Criar conta corrente, poupança e empresarial | ✅ |
-| Depósito com aplicação de taxa na conta corrente | ✅ |
+| Depósito com taxa na conta corrente | ✅ |
 | Saque com taxa fixa na conta corrente | ✅ |
 | `SaldoInsuficienteException` no saque | ✅ |
 | `LimiteExcedidoException` no depósito — corrente, poupança e empresarial | ✅ |
 | `LimiteExcedidoException` no saque empresarial | ✅ |
-| Rendimento da poupança (`getRendimento()`) | ✅ |
+| Rendimento da poupança | ✅ |
 | Registro de `Transacao` ao depositar | ✅ |
 | Registro de `Transacao` ao sacar | ✅ |
 
@@ -237,7 +217,6 @@ mvn test
 ## Melhorias Futuras
 
 - [ ] Tratamento global de exceções com `@ControllerAdvice`
-- [ ] Documentação com Swagger / OpenAPI
+- [ ] Documentação com Swagger/OpenAPI
 - [ ] Autenticação com Spring Security
 - [ ] Paginação nos endpoints de listagem
-- [ ] Interface gráfica
