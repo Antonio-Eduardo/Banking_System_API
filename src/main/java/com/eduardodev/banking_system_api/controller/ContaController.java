@@ -1,4 +1,4 @@
-package com.eduardodev.banking_system_api.resources;
+package com.eduardodev.banking_system_api.controller;
 
 import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.service.AccountService;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accounts")
-public class ContaResource {
+public class ContaController {
 
     @Autowired
     AccountService accountService;

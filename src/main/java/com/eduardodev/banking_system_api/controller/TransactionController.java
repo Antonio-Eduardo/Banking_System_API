@@ -1,4 +1,4 @@
-package com.eduardodev.banking_system_api.resources;
+package com.eduardodev.banking_system_api.controller;
 
 import com.eduardodev.banking_system_api.entities.Transacao;
 import com.eduardodev.banking_system_api.repository.TransactionRepository;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
-public class TransactionResource {
+public class TransactionController {
 
     @Autowired
     private TransactionRepository transactionRepository;
