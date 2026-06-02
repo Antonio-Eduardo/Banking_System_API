@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = "text/plain;charset=UTF-8")
     public String home() {
         return """
-            ╔════════════════════════════════════════════════════════════════════════════════╗
-            ║              BEM-VINDO AO SISTEMA BANCÁRIO API                                 ║
-            ╚════════════════════════════════════════════════════════════════════════════════╝
-            
+           
+                          BEM-VINDO AO SISTEMA BANCÁRIO API
+         
+           
             Esta API oferece funcionalidades completas para gerenciar contas bancárias e
             transações. Abaixo estão todos os endpoints disponíveis:
            ------------------------------------------------------------------------------
