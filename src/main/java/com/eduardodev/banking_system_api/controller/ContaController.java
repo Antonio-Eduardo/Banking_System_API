@@ -2,6 +2,7 @@ package com.eduardodev.banking_system_api.controller;
 
 import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.service.AccountService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +34,14 @@ public class ContaController {
             return ResponseEntity.notFound().build();
         }
     }
-    @PostMapping
+
+    @PostMapping("/insert")
     public ResponseEntity<Conta> createAccount(@RequestBody Conta conta) {
         Conta createdConta = accountService.createAccount(conta);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getIdConta()).toUri();
         return ResponseEntity.created(uri).body(createdConta);
     }
+
     @PutMapping(value = "/deposit/{id}")
     public ResponseEntity<Conta> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
         Conta updatedConta = accountService.Deposit(id, valor);
@@ -48,6 +51,7 @@ public class ContaController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PutMapping(value = "/saque/{id}")
     public ResponseEntity<Conta> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
         Conta updatedConta = accountService.Saque(id, valor);
@@ -57,11 +61,13 @@ public class ContaController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PutMapping(value = "/delete/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
+
     @PutMapping(value = "/transf/{idOrigem}/{idDestino}")
     public ResponseEntity<Conta> updateTransferencia(@PathVariable Long idOrigem, @PathVariable Long idDestino, @RequestBody BigDecimal valor) {
         Conta updatedConta = accountService.Transferencia(idOrigem, idDestino, valor);

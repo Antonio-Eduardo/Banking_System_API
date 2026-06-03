@@ -2,6 +2,7 @@ package com.eduardodev.banking_system_api.controller;
 
 import com.eduardodev.banking_system_api.entities.Transacao;
 import com.eduardodev.banking_system_api.repository.TransactionRepository;
+import com.eduardodev.banking_system_api.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,17 +16,16 @@ import java.util.List;
 public class TransactionController {
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransactionService transactionService;
 
     @GetMapping
     public ResponseEntity<List<Transacao>> getAllTransactions() {
-        List<Transacao> transactions = transactionRepository.findAll();
+        List<Transacao> transactions = transactionService.findAllTransactions().stream().toList();
         return ResponseEntity.ok(transactions);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Transacao> getTransactionById(Long id) {
-        return transactionRepository.findById(id)
-                .map(transaction -> ResponseEntity.ok().body(transaction))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Transacao> getTransactionById(Long id){
+        Transacao transacao = transactionService.findTransactionById(id);
+        return ResponseEntity.ok().body(transacao);
     }
 }
