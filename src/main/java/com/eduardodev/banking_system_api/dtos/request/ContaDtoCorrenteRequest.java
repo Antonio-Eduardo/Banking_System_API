@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class ContaDTOrequest {
+public class ContaDtoCorrenteRequest {
     public String Titular;
     public BigDecimal balance;
 }

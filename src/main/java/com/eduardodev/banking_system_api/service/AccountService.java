@@ -1,6 +1,9 @@
 package com.eduardodev.banking_system_api.service;
 
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoCorrenteRequest;
+import com.eduardodev.banking_system_api.dtos.response.ContaDTOresponse;
 import com.eduardodev.banking_system_api.entities.Conta;
+import com.eduardodev.banking_system_api.entities.ContaCorrente;
 import com.eduardodev.banking_system_api.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class AccountService {
@@ -17,15 +19,31 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Conta createAccount(Conta conta) {
-        return accountRepository.save(conta);
+    @Transactional
+    public ContaDTOresponse createAccountCorrente(ContaDtoCorrenteRequest contaDTOrequest) {
+        Conta conta = new ContaCorrente();
+        conta.setTitular(contaDTOrequest.getTitular());
+        conta.setBalance(contaDTOrequest.getBalance());
+        Conta savedConta = accountRepository.save(conta);
+        ContaDTOresponse contaDTOresponse = new ContaDTOresponse();
+        contaDTOresponse.setId(savedConta.getIdConta());
+        contaDTOresponse.setTitular(savedConta.getTitular());
+        contaDTOresponse.setBalance(savedConta.getBalance());
+
+        return contaDTOresponse;
     }
+    @Transactional
+    public ContaDTOresponse
+
+    @Transactional
     public void deleteAccount(Long id) {
         accountRepository.deleteById(id);
     }
+
     public Conta findAccountById(Long id) {
         return accountRepository.findById(id).orElse(null);
     }
+
     public List<Conta> findAllAccounts() {
         return new ArrayList<>(accountRepository.findAll());
     }
