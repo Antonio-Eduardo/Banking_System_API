@@ -4,16 +4,25 @@ import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
 import com.eduardodev.banking_system_api.interfaces.Tax;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 
 
 @Entity
 @NoArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class ContaCorrente extends Conta implements Tax {
+
+    @Column(name = "limite_cheque_especial")
+    private BigDecimal limiteChequeEspecial;
 
     @Override
     public void sacar(BigDecimal valor){

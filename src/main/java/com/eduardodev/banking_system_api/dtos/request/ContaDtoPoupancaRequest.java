@@ -4,13 +4,10 @@ import com.eduardodev.banking_system_api.dtos.request.superdtoconta.ContaDtoRequ
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ContaDtoEmpresarialRequest extends ContaDtoRequest {
-    private String cnpj;
-    private String razaoSocial;
-    private BigDecimal emprestimo;
-
+public class ContaDtoPoupancaRequest extends ContaDtoRequest {
+    public LocalDate dataAniversario;
 }

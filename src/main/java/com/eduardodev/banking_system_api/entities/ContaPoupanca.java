@@ -4,16 +4,22 @@ import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
 import com.eduardodev.banking_system_api.interfaces.Tax;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
 public final class ContaPoupanca extends Conta implements Tax {
     private static final double JUROS_RENDIMENTO = 0.008;
+
+    @Column(name = "data_aniversario")
+    private LocalDate dataAniversario;
 
     @Override
     public void sacar(BigDecimal valor){

@@ -4,17 +4,29 @@ import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
 import com.eduardodev.banking_system_api.interfaces.Tax;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Entity
+@EqualsAndHashCode(callSuper = true)
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public final class  ContaEmpresarial extends Conta implements Tax {
+    @Column(name = "razao_social")
+    private String razaoSocial;
+
+    @Column(name = "cnpj")
+    private String cnpj;
+
+    @Column(name = "emprestimo")
     private BigDecimal emprestimo;
 
     @Override
@@ -36,14 +48,6 @@ public final class  ContaEmpresarial extends Conta implements Tax {
         }
         balance = balance.add(valor).subtract(tax(valor));
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));;
-    }
-
-    public BigDecimal getEmprestimoPers() {
-        return emprestimo;
-    }
-
-    public void setEmprestimoPers(BigDecimal emprestimo) {
-        this.emprestimo = emprestimo;
     }
 
     @Override

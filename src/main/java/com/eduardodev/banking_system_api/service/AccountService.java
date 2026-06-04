@@ -1,15 +1,18 @@
 package com.eduardodev.banking_system_api.service;
 
 import com.eduardodev.banking_system_api.dtos.request.ContaDtoCorrenteRequest;
-import com.eduardodev.banking_system_api.dtos.response.ContaDTOresponse;
+import com.eduardodev.banking_system_api.dtos.response.ContaCorrenteDtoResponse;
 import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.entities.ContaCorrente;
+import com.eduardodev.banking_system_api.entities.ContaPoupanca;
 import com.eduardodev.banking_system_api.repository.AccountRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,20 +23,51 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     @Transactional
-    public ContaDTOresponse createAccountCorrente(ContaDtoCorrenteRequest contaDTOrequest) {
-        Conta conta = new ContaCorrente();
+    public ContaCorrenteDtoResponse createAccountCorrente(ContaDtoCorrenteRequest contaDTOrequest) {
+        ContaCorrente conta = new ContaCorrente();
         conta.setTitular(contaDTOrequest.getTitular());
         conta.setBalance(contaDTOrequest.getBalance());
+        conta.setNumeroConta(contaDTOrequest.getNumeroConta());
+        conta.setAtiva(conta.isAtiva());
+        conta.setDataAbertura(contaDTOrequest.getDataAbertura());
+        conta.setAgencia(conta.getAgencia());
+        conta.setLimiteChequeEspecial(contaDTOrequest.getLimiteChequeEspecial());
+
+
+         ContaCorrente savedConta = accountRepository.save(conta);
+
+        return getContaCorrenteDtoResponse(savedConta, conta);
+    }
+
+    private static @NonNull ContaCorrenteDtoResponse getContaCorrenteDtoResponse(ContaCorrente savedConta, ContaCorrente conta) {
+        ContaCorrenteDtoResponse contaDTOresponse = new ContaCorrenteDtoResponse();
+        contaDTOresponse.setId(savedConta.getIdConta());
+        contaDTOresponse.setTitular(savedConta.getTitular());
+        contaDTOresponse.setBalance(savedConta.getBalance());
+        contaDTOresponse.setDataAbertura(conta.getDataAbertura());
+        contaDTOresponse.setAtiva(conta.isAtiva());
+        contaDTOresponse.setLimiteChequeEspecial(conta.getLimiteChequeEspecial());
+        contaDTOresponse.setAgencia(conta.getAgencia());
+        return contaDTOresponse;
+    }
+
+    @Transactional
+    public ContaCorrenteDtoResponse createAccountPoupanca(ContaDtoCorrenteRequest contaDTOrequest) {
+        Conta conta = new ContaPoupanca();
+        conta.setTitular(contaDTOrequest.getTitular());
+        conta.setBalance(contaDTOrequest.getBalance());
+        conta.setAtiva(contaDTOrequest.getAtiva();
+        conta.setNumeroConta(contaDTOrequest.getNumeroConta());
+        conta.setDataAbertura(LocalDate.now());
+
         Conta savedConta = accountRepository.save(conta);
-        ContaDTOresponse contaDTOresponse = new ContaDTOresponse();
+        ContaCorrenteDtoResponse contaDTOresponse = new ContaCorrenteDtoResponse();
         contaDTOresponse.setId(savedConta.getIdConta());
         contaDTOresponse.setTitular(savedConta.getTitular());
         contaDTOresponse.setBalance(savedConta.getBalance());
 
         return contaDTOresponse;
     }
-    @Transactional
-    public ContaDTOresponse
 
     @Transactional
     public void deleteAccount(Long id) {
