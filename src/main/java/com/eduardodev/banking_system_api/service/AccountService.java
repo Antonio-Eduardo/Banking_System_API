@@ -11,6 +11,7 @@ import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.entities.ContaCorrente;
 import com.eduardodev.banking_system_api.entities.ContaEmpresarial;
 import com.eduardodev.banking_system_api.entities.ContaPoupanca;
+import com.eduardodev.banking_system_api.exceptions.ResourceNotFoundException;
 import com.eduardodev.banking_system_api.repository.AccountRepository;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +51,14 @@ public class AccountService {
 
     @Transactional
     public void deleteAccount(Long id) {
+        Conta existingConta = accountRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
         accountRepository.deleteById(id);
     }
 
     public Conta findAccountById(Long id) {
-        return accountRepository.findById(id).orElse(null);
+        return accountRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
     }
 
     public List<Conta> findAllAccounts() {
@@ -63,37 +67,29 @@ public class AccountService {
 
     @Transactional
     public Conta Deposit(Long id, BigDecimal amount) {
-        Conta existingConta = accountRepository.findById(id).orElse(null);
-        if (existingConta != null) {
+        Conta existingConta = accountRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
             existingConta.deposito(amount);
             return accountRepository.save(existingConta);
-        } else {
-            return null;
-        }
     }
     @Transactional
     public Conta Saque(Long id, BigDecimal amount) {
-        Conta existingConta = accountRepository.findById(id).orElse(null);
-        if (existingConta != null) {
+        Conta existingConta = accountRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
             existingConta.sacar(amount);
             return accountRepository.save(existingConta);
-        } else {
-            return null;
 
         }
-    }
     @Transactional
     public Conta Transferencia(Long idOrigem, Long idDestino, BigDecimal amount) {
-        Conta contaOrigem = accountRepository.findById(idOrigem).orElse(null);
-        Conta contaDestino = accountRepository.findById(idDestino).orElse(null);
-        if (contaOrigem != null && contaDestino != null) {
+        Conta contaOrigem = accountRepository.findById(idOrigem).orElseThrow(
+                () -> new ResourceNotFoundException("Conta não encontrada com id: " + idOrigem));
+        Conta contaDestino = accountRepository.findById(idDestino).orElseThrow(
+                () -> new ResourceNotFoundException("Conta não encontrada com id: " + idDestino));
             contaOrigem.sacar(amount);
             contaDestino.deposito(amount);
             accountRepository.save(contaOrigem);
             return accountRepository.save(contaDestino);
-        } else {
-            return null;
-        }
     }
     public ContaCorrenteDtoResponse toResponseCC(ContaCorrente contaRequest){
        ContaCorrenteDtoResponse contaCorrenteDtoResponse = new ContaCorrenteDtoResponse();

@@ -1,6 +1,13 @@
 package com.eduardodev.banking_system_api.controller;
 
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoCorrenteRequest;
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoEmpresarialRequest;
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoPoupancaRequest;
+import com.eduardodev.banking_system_api.dtos.response.ContaCorrenteDtoResponse;
+import com.eduardodev.banking_system_api.dtos.response.ContaDtoEmpresarialResponse;
+import com.eduardodev.banking_system_api.dtos.response.ContaDtoPoupancaResponse;
 import com.eduardodev.banking_system_api.entities.Conta;
+import com.eduardodev.banking_system_api.entities.ContaCorrente;
 import com.eduardodev.banking_system_api.service.AccountService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,13 +51,31 @@ public class ContaController {
         }
     }
 
-    @PostMapping("/insert")
-    @Operation(summary = "Inserir uma conta")
-    @ApiResponse(responseCode = "201", description = "Conta criada com sucesso")
+    @PostMapping("/insert/cc")
+    @Operation(summary = "Inserir uma conta corrente")
+    @ApiResponse(responseCode = "201", description = "Conta Corrente criada com sucesso")
     @ApiResponse(responseCode = "400", description = "Falha na criação")
-    public ResponseEntity<Conta> createAccount(@RequestBody Conta conta) {
-        Conta createdConta = accountService.createAccount(conta);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getIdConta()).toUri();
+    public ResponseEntity<ContaCorrenteDtoResponse> createAccount(@RequestBody ContaDtoCorrenteRequest conta) {
+        ContaCorrenteDtoResponse createdConta = accountService.createAccountCorrente(conta);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getId()).toUri();
+        return ResponseEntity.created(uri).body(createdConta);
+    }
+    @PostMapping("/insert/ce")
+    @Operation(summary = "Inserir uma conta empresarial")
+    @ApiResponse(responseCode = "201", description = "Conta Empresarial criada com sucesso")
+    @ApiResponse(responseCode = "400", description = "Falha na criação")
+    public ResponseEntity<ContaDtoEmpresarialResponse> createAccount(@RequestBody ContaDtoEmpresarialRequest conta) {
+        ContaDtoEmpresarialResponse createdConta = accountService.createAccountEmpresarial(conta);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getId()).toUri();
+        return ResponseEntity.created(uri).body(createdConta);
+    }
+    @PostMapping("/insert/cp")
+    @Operation(summary = "Inserir uma conta poupança")
+    @ApiResponse(responseCode = "201", description = "Conta Poupança criada com sucesso")
+    @ApiResponse(responseCode = "400", description = "Falha na criação")
+    public ResponseEntity<ContaDtoPoupancaResponse> createAccount(@RequestBody ContaDtoPoupancaRequest conta) {
+        ContaDtoPoupancaResponse createdConta = accountService.createAccountPoupanca(conta);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getId()).toUri();
         return ResponseEntity.created(uri).body(createdConta);
     }
 
