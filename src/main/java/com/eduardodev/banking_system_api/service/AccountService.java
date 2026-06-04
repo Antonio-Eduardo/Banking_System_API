@@ -56,7 +56,7 @@ public class AccountService {
         Conta conta = new ContaPoupanca();
         conta.setTitular(contaDTOrequest.getTitular());
         conta.setBalance(contaDTOrequest.getBalance());
-        conta.setAtiva(contaDTOrequest.getAtiva();
+        conta.setAtiva(contaDTOrequest.isAtiva());
         conta.setNumeroConta(contaDTOrequest.getNumeroConta());
         conta.setDataAbertura(LocalDate.now());
 
