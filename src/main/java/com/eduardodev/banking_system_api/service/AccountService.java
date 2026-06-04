@@ -30,50 +30,22 @@ public class AccountService {
 
     @Transactional
     public ContaCorrenteDtoResponse createAccountCorrente(ContaDtoCorrenteRequest contaDTOrequest) {
-        ContaCorrente conta = new ContaCorrente();
-        conta.setTitular(contaDTOrequest.getTitular());
-        conta.setBalance(contaDTOrequest.getBalance());
-        conta.setNumeroConta(contaDTOrequest.getNumeroConta());
-        conta.setAtiva(conta.isAtiva());
-        conta.setDataAbertura(contaDTOrequest.getDataAbertura());
-        conta.setAgencia(conta.getAgencia());
-        conta.setLimiteChequeEspecial(contaDTOrequest.getLimiteChequeEspecial());
-
-
+        ContaCorrente conta = toEntityCC(contaDTOrequest);
          ContaCorrente savedConta = accountRepository.save(conta);
-
-        return convertContaCorrente(savedConta);
+        return toResponseCC(savedConta);
 
     }
     @Transactional
     public ContaDtoPoupancaResponse createAccountPoupanca(ContaDtoPoupancaRequest contaDTOrequest) {
-        ContaPoupanca conta = new ContaPoupanca();
-        conta.setTitular(contaDTOrequest.getTitular());
-        conta.setBalance(contaDTOrequest.getBalance());
-        conta.setAtiva(contaDTOrequest.isAtiva());
-        conta.setNumeroConta(contaDTOrequest.getNumeroConta());
-        conta.setDataAbertura(LocalDate.now());
-
+        ContaPoupanca conta = toEntityCP(contaDTOrequest);
         ContaPoupanca savedConta =accountRepository.save(conta);
-
-        return convertContaPoupanca(savedConta);
+        return toResponseCP(savedConta);
     }
     @Transactional
     public ContaDtoEmpresarialResponse createAccountEmpresarial(ContaDtoEmpresarialRequest contaDTOrequest) {
-        ContaEmpresarial conta = new ContaEmpresarial();
-        conta.setTitular(contaDTOrequest.getTitular());
-        conta.setBalance(contaDTOrequest.getBalance());
-        conta.setNumeroConta(contaDTOrequest.getNumeroConta());
-        conta.setAtiva(contaDTOrequest.isAtiva());
-        conta.setDataAbertura(LocalDate.now());
-        conta.setAgencia(contaDTOrequest.getAgencia());
-        conta.setRazaoSocial(contaDTOrequest.getRazaoSocial());
-        conta.setCnpj(contaDTOrequest.getCnpj());
-        conta.setEmprestimo(contaDTOrequest.getEmprestimo());
-
+        ContaEmpresarial conta = toEntityCE(contaDTOrequest);
         ContaEmpresarial savedConta = accountRepository.save(conta);
-
-        return convertContaEmpresarial(savedConta);
+        return toResponseCE(savedConta);
     }
 
     @Transactional
@@ -123,8 +95,9 @@ public class AccountService {
             return null;
         }
     }
-    public ContaCorrenteDtoResponse convertContaCorrente(ContaCorrente contaRequest){
+    public ContaCorrenteDtoResponse toResponseCC(ContaCorrente contaRequest){
        ContaCorrenteDtoResponse contaCorrenteDtoResponse = new ContaCorrenteDtoResponse();
+       contaCorrenteDtoResponse.setId(contaRequest.getIdConta());
        contaCorrenteDtoResponse.setTitular(contaRequest.getTitular());
        contaCorrenteDtoResponse.setBalance(contaRequest.getBalance());
        contaCorrenteDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
@@ -134,7 +107,7 @@ public class AccountService {
        contaCorrenteDtoResponse.setLimiteChequeEspecial(contaRequest.getLimiteChequeEspecial());
        return contaCorrenteDtoResponse;
     }
-    public ContaDtoEmpresarialResponse convertContaEmpresarial(ContaEmpresarial contaRequest){
+    public ContaDtoEmpresarialResponse toResponseCE(ContaEmpresarial contaRequest){
         ContaDtoEmpresarialResponse contaEmpresarialDtoResponse = new ContaDtoEmpresarialResponse();
         contaEmpresarialDtoResponse.setId(contaRequest.getIdConta());
         contaEmpresarialDtoResponse.setTitular(contaRequest.getTitular());
@@ -148,8 +121,9 @@ public class AccountService {
         contaEmpresarialDtoResponse.setEmprestimo(contaRequest.getEmprestimo());
         return contaEmpresarialDtoResponse;
     }
-    public ContaDtoPoupancaResponse convertContaPoupanca(ContaPoupanca contaRequest){
+    public ContaDtoPoupancaResponse toResponseCP(ContaPoupanca contaRequest){
         ContaDtoPoupancaResponse contaPoupancaDtoResponse = new ContaDtoPoupancaResponse();
+        contaPoupancaDtoResponse.setId(contaRequest.getIdConta());
         contaPoupancaDtoResponse.setTitular(contaRequest.getTitular());
         contaPoupancaDtoResponse.setBalance(contaRequest.getBalance());
         contaPoupancaDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
@@ -158,5 +132,40 @@ public class AccountService {
         contaPoupancaDtoResponse.setAgencia(contaRequest.getAgencia());
         contaPoupancaDtoResponse.setDataAniversario(contaRequest.getDataAniversario());
         return contaPoupancaDtoResponse;
+    }
+    public ContaEmpresarial toEntityCE(ContaDtoEmpresarialRequest conta) {
+        ContaEmpresarial contaEmpresarial = new ContaEmpresarial();
+        contaEmpresarial.setTitular(conta.getTitular());
+        contaEmpresarial.setBalance(conta.getBalance());
+        contaEmpresarial.setNumeroConta(conta.getNumeroConta());
+        contaEmpresarial.setAtiva(conta.isAtiva());
+        contaEmpresarial.setDataAbertura(conta.getDataAbertura());
+        contaEmpresarial.setAgencia(conta.getAgencia());
+        contaEmpresarial.setRazaoSocial(conta.getRazaoSocial());
+        contaEmpresarial.setCnpj(conta.getCnpj());
+        contaEmpresarial.setEmprestimo(conta.getEmprestimo());
+        return contaEmpresarial;
+    }
+    public ContaPoupanca toEntityCP(ContaDtoPoupancaRequest conta) {
+        ContaPoupanca contaPoupanca = new ContaPoupanca();
+        contaPoupanca.setTitular(conta.getTitular());
+        contaPoupanca.setBalance(conta.getBalance());
+        contaPoupanca.setNumeroConta(conta.getNumeroConta());
+        contaPoupanca.setAtiva(conta.isAtiva());
+        contaPoupanca.setDataAbertura(conta.getDataAbertura());
+        contaPoupanca.setAgencia(conta.getAgencia());
+        contaPoupanca.setDataAniversario(conta.getDataAniversario());
+        return contaPoupanca;
+    }
+    public ContaCorrente toEntityCC(ContaDtoCorrenteRequest conta) {
+        ContaCorrente contaCorrente = new ContaCorrente();
+        contaCorrente.setTitular(conta.getTitular());
+        contaCorrente.setBalance(conta.getBalance());
+        contaCorrente.setNumeroConta(conta.getNumeroConta());
+        contaCorrente.setAtiva(conta.isAtiva());
+        contaCorrente.setDataAbertura(conta.getDataAbertura());
+        contaCorrente.setAgencia(conta.getAgencia());
+        contaCorrente.setLimiteChequeEspecial(conta.getLimiteChequeEspecial());
+        return contaCorrente;
     }
 }

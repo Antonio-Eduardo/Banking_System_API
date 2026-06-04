@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ContaCorrenteDtoResponse extends ContaDTO {
+    public Long id;
     public BigDecimal limiteChequeEspecial;
 
 
