@@ -6,6 +6,8 @@ import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
 import com.eduardodev.banking_system_api.interfaces.Tax;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.cglib.core.Local;
 
@@ -15,6 +17,8 @@ import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true)
 public final class ContaPoupanca extends Conta implements Tax {
     private static final double JUROS_RENDIMENTO = 0.008;
 

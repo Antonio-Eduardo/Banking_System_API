@@ -1,9 +1,15 @@
 package com.eduardodev.banking_system_api.service;
 
 import com.eduardodev.banking_system_api.dtos.request.ContaDtoCorrenteRequest;
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoEmpresarialRequest;
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoPoupancaRequest;
+import com.eduardodev.banking_system_api.dtos.request.superdtoconta.ContaDTO;
 import com.eduardodev.banking_system_api.dtos.response.ContaCorrenteDtoResponse;
+import com.eduardodev.banking_system_api.dtos.response.ContaDtoEmpresarialResponse;
+import com.eduardodev.banking_system_api.dtos.response.ContaDtoPoupancaResponse;
 import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.entities.ContaCorrente;
+import com.eduardodev.banking_system_api.entities.ContaEmpresarial;
 import com.eduardodev.banking_system_api.entities.ContaPoupanca;
 import com.eduardodev.banking_system_api.repository.AccountRepository;
 import org.jspecify.annotations.NonNull;
@@ -36,37 +42,38 @@ public class AccountService {
 
          ContaCorrente savedConta = accountRepository.save(conta);
 
-        return getContaCorrenteDtoResponse(savedConta, conta);
-    }
+        return convertContaCorrente(savedConta);
 
-    private static @NonNull ContaCorrenteDtoResponse getContaCorrenteDtoResponse(ContaCorrente savedConta, ContaCorrente conta) {
-        ContaCorrenteDtoResponse contaDTOresponse = new ContaCorrenteDtoResponse();
-        contaDTOresponse.setId(savedConta.getIdConta());
-        contaDTOresponse.setTitular(savedConta.getTitular());
-        contaDTOresponse.setBalance(savedConta.getBalance());
-        contaDTOresponse.setDataAbertura(conta.getDataAbertura());
-        contaDTOresponse.setAtiva(conta.isAtiva());
-        contaDTOresponse.setLimiteChequeEspecial(conta.getLimiteChequeEspecial());
-        contaDTOresponse.setAgencia(conta.getAgencia());
-        return contaDTOresponse;
     }
-
     @Transactional
-    public ContaCorrenteDtoResponse createAccountPoupanca(ContaDtoCorrenteRequest contaDTOrequest) {
-        Conta conta = new ContaPoupanca();
+    public ContaDtoPoupancaResponse createAccountPoupanca(ContaDtoPoupancaRequest contaDTOrequest) {
+        ContaPoupanca conta = new ContaPoupanca();
         conta.setTitular(contaDTOrequest.getTitular());
         conta.setBalance(contaDTOrequest.getBalance());
         conta.setAtiva(contaDTOrequest.isAtiva());
         conta.setNumeroConta(contaDTOrequest.getNumeroConta());
         conta.setDataAbertura(LocalDate.now());
 
-        Conta savedConta = accountRepository.save(conta);
-        ContaCorrenteDtoResponse contaDTOresponse = new ContaCorrenteDtoResponse();
-        contaDTOresponse.setId(savedConta.getIdConta());
-        contaDTOresponse.setTitular(savedConta.getTitular());
-        contaDTOresponse.setBalance(savedConta.getBalance());
+        ContaPoupanca savedConta =accountRepository.save(conta);
 
-        return contaDTOresponse;
+        return convertContaPoupanca(savedConta);
+    }
+    @Transactional
+    public ContaDtoEmpresarialResponse createAccountEmpresarial(ContaDtoEmpresarialRequest contaDTOrequest) {
+        ContaEmpresarial conta = new ContaEmpresarial();
+        conta.setTitular(contaDTOrequest.getTitular());
+        conta.setBalance(contaDTOrequest.getBalance());
+        conta.setNumeroConta(contaDTOrequest.getNumeroConta());
+        conta.setAtiva(contaDTOrequest.isAtiva());
+        conta.setDataAbertura(LocalDate.now());
+        conta.setAgencia(contaDTOrequest.getAgencia());
+        conta.setRazaoSocial(contaDTOrequest.getRazaoSocial());
+        conta.setCnpj(contaDTOrequest.getCnpj());
+        conta.setEmprestimo(contaDTOrequest.getEmprestimo());
+
+        ContaEmpresarial savedConta = accountRepository.save(conta);
+
+        return convertContaEmpresarial(savedConta);
     }
 
     @Transactional
@@ -115,5 +122,41 @@ public class AccountService {
         } else {
             return null;
         }
+    }
+    public ContaCorrenteDtoResponse convertContaCorrente(ContaCorrente contaRequest){
+       ContaCorrenteDtoResponse contaCorrenteDtoResponse = new ContaCorrenteDtoResponse();
+       contaCorrenteDtoResponse.setTitular(contaRequest.getTitular());
+       contaCorrenteDtoResponse.setBalance(contaRequest.getBalance());
+       contaCorrenteDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
+       contaCorrenteDtoResponse.setAtiva(contaRequest.isAtiva());
+       contaCorrenteDtoResponse.setDataAbertura(contaRequest.getDataAbertura());
+       contaCorrenteDtoResponse.setAgencia(contaRequest.getAgencia());
+       contaCorrenteDtoResponse.setLimiteChequeEspecial(contaRequest.getLimiteChequeEspecial());
+       return contaCorrenteDtoResponse;
+    }
+    public ContaDtoEmpresarialResponse convertContaEmpresarial(ContaEmpresarial contaRequest){
+        ContaDtoEmpresarialResponse contaEmpresarialDtoResponse = new ContaDtoEmpresarialResponse();
+        contaEmpresarialDtoResponse.setId(contaRequest.getIdConta());
+        contaEmpresarialDtoResponse.setTitular(contaRequest.getTitular());
+        contaEmpresarialDtoResponse.setBalance(contaRequest.getBalance());
+        contaEmpresarialDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
+        contaEmpresarialDtoResponse.setAtiva(contaRequest.isAtiva());
+        contaEmpresarialDtoResponse.setDataAbertura(contaRequest.getDataAbertura());
+        contaEmpresarialDtoResponse.setAgencia(contaRequest.getAgencia());
+        contaEmpresarialDtoResponse.setRazaoSocial(contaRequest.getRazaoSocial());
+        contaEmpresarialDtoResponse.setCnpj(contaRequest.getCnpj());
+        contaEmpresarialDtoResponse.setEmprestimo(contaRequest.getEmprestimo());
+        return contaEmpresarialDtoResponse;
+    }
+    public ContaDtoPoupancaResponse convertContaPoupanca(ContaPoupanca contaRequest){
+        ContaDtoPoupancaResponse contaPoupancaDtoResponse = new ContaDtoPoupancaResponse();
+        contaPoupancaDtoResponse.setTitular(contaRequest.getTitular());
+        contaPoupancaDtoResponse.setBalance(contaRequest.getBalance());
+        contaPoupancaDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
+        contaPoupancaDtoResponse.setAtiva(contaRequest.isAtiva());
+        contaPoupancaDtoResponse.setDataAbertura(contaRequest.getDataAbertura());
+        contaPoupancaDtoResponse.setAgencia(contaRequest.getAgencia());
+        contaPoupancaDtoResponse.setDataAniversario(contaRequest.getDataAniversario());
+        return contaPoupancaDtoResponse;
     }
 }
