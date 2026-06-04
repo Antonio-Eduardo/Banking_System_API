@@ -53,7 +53,7 @@ public class AccountService {
     public void deleteAccount(Long id) {
         Conta existingConta = accountRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
-        accountRepository.deleteById(id);
+        accountRepository.delete(existingConta);
     }
 
     public Conta findAccountById(Long id) {
@@ -70,7 +70,8 @@ public class AccountService {
         Conta existingConta = accountRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
             existingConta.deposito(amount);
-            return accountRepository.save(existingConta);
+            Conta savedAccount = accountRepository.save(existingConta);
+            return
     }
     @Transactional
     public Conta Saque(Long id, BigDecimal amount) {

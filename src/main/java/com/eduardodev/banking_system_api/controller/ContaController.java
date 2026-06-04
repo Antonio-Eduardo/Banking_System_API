@@ -81,26 +81,20 @@ public class ContaController {
 
     @PutMapping(value = "/deposit/{id}")
     @Operation(summary = "Realizar um deposito em uma conta de acordo com o [ID]")
+    @ApiResponse(responseCode = "200", description = "Depósito realizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta não encontrada")
     public ResponseEntity<Conta> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
         Conta updatedConta = accountService.Deposit(id, valor);
-        if (updatedConta != null) {
             return ResponseEntity.ok().body(updatedConta);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @PutMapping(value = "/saque/{id}")
     @Operation(summary = "Realizar um saque em uma conta de acordo com o [ID]")
+    @ApiResponse(responseCode = "200", description = "Saque realizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta não encontrada")
     public ResponseEntity<Conta> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
         Conta updatedConta = accountService.Saque(id, valor);
-        if (updatedConta != null) {
             return ResponseEntity.ok().body(updatedConta);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @PutMapping(value = "/delete/{id}")
@@ -118,10 +112,6 @@ public class ContaController {
     @ApiResponse(responseCode = "404", description = "Conta [DESTINO] ou [ORIGEM] não encontradas")
     public ResponseEntity<Conta> updateTransferencia(@PathVariable Long idOrigem, @PathVariable Long idDestino, @RequestBody BigDecimal valor) {
         Conta updatedConta = accountService.Transferencia(idOrigem, idDestino, valor);
-        if (updatedConta != null) {
             return ResponseEntity.ok().body(updatedConta);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 }

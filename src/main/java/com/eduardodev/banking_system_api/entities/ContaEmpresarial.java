@@ -32,10 +32,10 @@ public final class  ContaEmpresarial extends Conta implements Tax {
     @Override
     public void sacar(BigDecimal valor){
         if (valor.add(tax(valor)).compareTo(balance) > 0) {
-            throw new SaldoInsuficienteException();
+            throw new SaldoInsuficienteException("Saldo insuficiente para saque. O valor máximo permitido é R$20.000,00 (incluindo taxas).");
         }
         if (valor.compareTo(new BigDecimal("20000")) >= 0){
-            throw new LimiteExcedidoException();
+            throw new LimiteExcedidoException("Limite excedido para saque. O valor máximo permitido é R$20.000,00 (incluindo taxas).");
         }
         balance = balance.subtract(valor.add(tax(valor)));
         addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance));
@@ -44,7 +44,7 @@ public final class  ContaEmpresarial extends Conta implements Tax {
     public void deposito(BigDecimal valor){
 
         if (valor.add(tax(valor)).compareTo(new BigDecimal("5000")) > 0) {
-            throw new LimiteExcedidoException();
+            throw new LimiteExcedidoException("Limite excedido para depósito. O valor máximo permitido é R$5.000,00 (incluindo taxas).");
         }
         balance = balance.add(valor).subtract(tax(valor));
         addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));;
@@ -59,7 +59,7 @@ public final class  ContaEmpresarial extends Conta implements Tax {
             addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, this.getBalance()));
             contaDestino.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, contaDestino.getBalance()));
         } else {
-            throw new SaldoInsuficienteException();
+            throw new SaldoInsuficienteException("Saldo insuficiente para transferência. O valor máximo permitido é R$20.000,00 (incluindo taxas).");
         }
     }
 
