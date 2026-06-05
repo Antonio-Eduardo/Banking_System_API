@@ -26,29 +26,29 @@ public final class ContaPoupanca extends Conta implements Tax {
     private LocalDate dataAniversario;
 
     @Override
-    public void sacar(BigDecimal valor){
+    public Transacao sacar(BigDecimal valor){
         if (valor.add(tax(valor)).compareTo(balance) > 0) {
             throw new SaldoInsuficienteException("Saldo insuficiente para saque. O valor máximo permitido é R$10.000,00 (incluindo taxas).");
         }
         balance = balance.subtract(valor.add(tax(valor)));
-        addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance));
+        return addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance));
     }
     @Override
-    public void deposito(BigDecimal valor){
+    public Transacao deposito(BigDecimal valor){
         if (tax(valor).add(valor).compareTo(new BigDecimal("10000")) > 0) {
             throw new LimiteExcedidoException("Limite excedido para depósito. O valor máximo permitido é R$10.000,00 (incluindo taxas).");
         }
         balance = balance.add(valor).subtract(tax(valor));
-        addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));
+        return addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));
     }
 
     @Override
-    public void transferencia( BigDecimal valor, Conta contaDestino) {
+    public Transacao transferencia( BigDecimal valor, Conta contaDestino) {
         if (valor.add( tax(valor) ).compareTo(balance) <= 0) {
             balance = balance.subtract(valor.add(tax(valor)));
             contaDestino.creditar(valor);
-            addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, this.getBalance()));
-            contaDestino.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, contaDestino.getBalance()));
+             contaDestino.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, contaDestino.getBalance()));
+            return addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, this.getBalance()));
         } else {
             throw new SaldoInsuficienteException("Saldo insuficiente para transferência. O valor máximo permitido é R$10.000,00 (incluindo taxas).");
         }

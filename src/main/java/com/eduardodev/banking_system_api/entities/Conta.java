@@ -46,14 +46,15 @@ public abstract class Conta {
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transacao> historicoTransacoes = new ArrayList<>();
 
-    public void addTransacao(Transacao transacao){
+    public Transacao addTransacao(Transacao transacao){
         transacao.setConta(this);
         historicoTransacoes.add(transacao);
+        return transacao;
     }
 
-    public abstract void sacar(BigDecimal valor);
-    public abstract void deposito(BigDecimal valor);
-    public abstract void transferencia(BigDecimal valor, Conta contaDestino);
+    public abstract Transacao sacar(BigDecimal valor);
+    public abstract Transacao deposito(BigDecimal valor);
+    public abstract Transacao transferencia(BigDecimal valor, Conta contaDestino);
 
     @JsonIgnore
     public Transacao getUltimaTransacao() {

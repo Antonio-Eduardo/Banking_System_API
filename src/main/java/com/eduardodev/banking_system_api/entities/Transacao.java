@@ -23,7 +23,7 @@ public class Transacao{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long iD;
-    @Enumerated(EnumType.STRING)
+
     private TipoOperacao tipoOperacao;
     @Column(precision = 10, scale = 2)
     private BigDecimal valor;

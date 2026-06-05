@@ -7,10 +7,8 @@ import com.eduardodev.banking_system_api.dtos.request.superdtoconta.ContaDTO;
 import com.eduardodev.banking_system_api.dtos.response.ContaCorrenteDtoResponse;
 import com.eduardodev.banking_system_api.dtos.response.ContaDtoEmpresarialResponse;
 import com.eduardodev.banking_system_api.dtos.response.ContaDtoPoupancaResponse;
-import com.eduardodev.banking_system_api.entities.Conta;
-import com.eduardodev.banking_system_api.entities.ContaCorrente;
-import com.eduardodev.banking_system_api.entities.ContaEmpresarial;
-import com.eduardodev.banking_system_api.entities.ContaPoupanca;
+import com.eduardodev.banking_system_api.dtos.response.OperacaoDTOresponse;
+import com.eduardodev.banking_system_api.entities.*;
 import com.eduardodev.banking_system_api.exceptions.ResourceNotFoundException;
 import com.eduardodev.banking_system_api.repository.AccountRepository;
 import org.jspecify.annotations.NonNull;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,31 +65,33 @@ public class AccountService {
     }
 
     @Transactional
-    public Conta Deposit(Long id, BigDecimal amount) {
+    public OperacaoDTOresponse Deposit(Long id, BigDecimal amount) {
         Conta existingConta = accountRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
-            existingConta.deposito(amount);
+            Transacao transacao = existingConta.deposito(amount);
             Conta savedAccount = accountRepository.save(existingConta);
-            return
+            return toOperationResponse(savedAccount,transacao);
     }
     @Transactional
-    public Conta Saque(Long id, BigDecimal amount) {
+    public OperacaoDTOresponse Saque(Long id, BigDecimal amount) {
         Conta existingConta = accountRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
-            existingConta.sacar(amount);
-            return accountRepository.save(existingConta);
+        Conta conta = accountRepository.save(existingConta);
+            Transacao transacao = existingConta.sacar(amount);
+            return toOperationResponse(conta,transacao);
 
         }
     @Transactional
-    public Conta Transferencia(Long idOrigem, Long idDestino, BigDecimal amount) {
+    public OperacaoDTOresponse Transferencia(Long idOrigem, Long idDestino, BigDecimal amount) {
         Conta contaOrigem = accountRepository.findById(idOrigem).orElseThrow(
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + idOrigem));
         Conta contaDestino = accountRepository.findById(idDestino).orElseThrow(
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + idDestino));
-            contaOrigem.sacar(amount);
+            Transacao transacao = contaOrigem.sacar(amount);
             contaDestino.deposito(amount);
-            accountRepository.save(contaOrigem);
-            return accountRepository.save(contaDestino);
+            Conta savedContaOrigem = accountRepository.save(contaOrigem);
+            accountRepository.save(contaDestino);
+            return toOperationResponse(savedContaOrigem,transacao);
     }
     public ContaCorrenteDtoResponse toResponseCC(ContaCorrente contaRequest){
        ContaCorrenteDtoResponse contaCorrenteDtoResponse = new ContaCorrenteDtoResponse();
@@ -164,5 +165,17 @@ public class AccountService {
         contaCorrente.setAgencia(conta.getAgencia());
         contaCorrente.setLimiteChequeEspecial(conta.getLimiteChequeEspecial());
         return contaCorrente;
+    }
+    public OperacaoDTOresponse toOperationResponse (Conta conta, Transacao transacao){
+        OperacaoDTOresponse operacaoDTOresponse = new OperacaoDTOresponse();
+        operacaoDTOresponse.setId(conta.getIdConta());
+        operacaoDTOresponse.setTitular(conta.getTitular());
+        operacaoDTOresponse.setSaldoApos(conta.getBalance());
+        operacaoDTOresponse.setDataHora(Instant.now());
+        operacaoDTOresponse.setNumeroConta(conta.getNumeroConta());
+        operacaoDTOresponse.setAgencia(conta.getAgencia());
+        operacaoDTOresponse.setValorOperacao(transacao.getValor());
+        operacaoDTOresponse.setTipoOperacao(transacao.getTipoOperacao().getValue());
+        return operacaoDTOresponse;
     }
 }

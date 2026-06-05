@@ -6,6 +6,7 @@ import com.eduardodev.banking_system_api.dtos.request.ContaDtoPoupancaRequest;
 import com.eduardodev.banking_system_api.dtos.response.ContaCorrenteDtoResponse;
 import com.eduardodev.banking_system_api.dtos.response.ContaDtoEmpresarialResponse;
 import com.eduardodev.banking_system_api.dtos.response.ContaDtoPoupancaResponse;
+import com.eduardodev.banking_system_api.dtos.response.OperacaoDTOresponse;
 import com.eduardodev.banking_system_api.entities.Conta;
 import com.eduardodev.banking_system_api.entities.ContaCorrente;
 import com.eduardodev.banking_system_api.service.AccountService;
@@ -50,7 +51,6 @@ public class ContaController {
             return ResponseEntity.notFound().build();
         }
     }
-
     @PostMapping("/insert/cc")
     @Operation(summary = "Inserir uma conta corrente")
     @ApiResponse(responseCode = "201", description = "Conta Corrente criada com sucesso")
@@ -83,20 +83,19 @@ public class ContaController {
     @Operation(summary = "Realizar um deposito em uma conta de acordo com o [ID]")
     @ApiResponse(responseCode = "200", description = "Depósito realizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta não encontrada")
-    public ResponseEntity<Conta> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.Deposit(id, valor);
-            return ResponseEntity.ok().body(updatedConta);
+    public ResponseEntity<OperacaoDTOresponse> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
+        OperacaoDTOresponse response = accountService.Deposit(id, valor);
+            return ResponseEntity.ok().body(response);
     }
 
     @PutMapping(value = "/saque/{id}")
     @Operation(summary = "Realizar um saque em uma conta de acordo com o [ID]")
     @ApiResponse(responseCode = "200", description = "Saque realizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta não encontrada")
-    public ResponseEntity<Conta> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.Saque(id, valor);
-            return ResponseEntity.ok().body(updatedConta);
+    public ResponseEntity<OperacaoDTOresponse> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
+        OperacaoDTOresponse response = accountService.Saque(id, valor);
+            return ResponseEntity.ok().body(response);
     }
-
     @PutMapping(value = "/delete/{id}")
     @Operation(summary = "Deletar uma conta pelo [ID]")
     @ApiResponse(responseCode = "204", description = "Conta deletada com sucesso")
@@ -110,8 +109,8 @@ public class ContaController {
     @Operation(summary = "Realizar uma transferência com base no [ID] de uma conta [ORIGEM] para o [ID] da conta [DESTINO]")
     @ApiResponse(responseCode = "200", description = "Transferência realizada com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta [DESTINO] ou [ORIGEM] não encontradas")
-    public ResponseEntity<Conta> updateTransferencia(@PathVariable Long idOrigem, @PathVariable Long idDestino, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.Transferencia(idOrigem, idDestino, valor);
-            return ResponseEntity.ok().body(updatedConta);
+    public ResponseEntity<OperacaoDTOresponse> updateTransferencia(@PathVariable Long idOrigem, @PathVariable Long idDestino, @RequestBody BigDecimal valor) {
+        OperacaoDTOresponse response = accountService.Transferencia(idOrigem, idDestino, valor);
+            return ResponseEntity.ok().body(response);
     }
 }
