@@ -47,4 +47,3 @@ src/main/resources/META-INF/persistence.xml
 .env
 application-local.properties
 db.properties
-application-dev.properties

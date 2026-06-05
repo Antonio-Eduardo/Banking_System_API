@@ -4,58 +4,62 @@ import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import com.eduardodev.banking_system_api.exceptions.LimiteExcedidoException;
 import com.eduardodev.banking_system_api.exceptions.SaldoInsuficienteException;
 import com.eduardodev.banking_system_api.interfaces.Tax;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Entity
+@EqualsAndHashCode(callSuper = true)
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public final class  ContaEmpresarial extends Conta implements Tax {
+    @Column(name = "razao_social")
+    private String razaoSocial;
+
+    @Column(name = "cnpj")
+    private String cnpj;
+
+    @Column(name = "emprestimo")
     private BigDecimal emprestimo;
 
     @Override
-    public void sacar(BigDecimal valor){
+    public Transacao sacar(BigDecimal valor){
         if (valor.add(tax(valor)).compareTo(balance) > 0) {
-            throw new SaldoInsuficienteException();
+            throw new SaldoInsuficienteException("Saldo insuficiente para saque. O valor máximo permitido é R$20.000,00 (incluindo taxas).");
         }
         if (valor.compareTo(new BigDecimal("20000")) >= 0){
-            throw new LimiteExcedidoException();
+            throw new LimiteExcedidoException("Limite excedido para saque. O valor máximo permitido é R$20.000,00 (incluindo taxas).");
         }
         balance = balance.subtract(valor.add(tax(valor)));
-        addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance));
+        return addTransacao(new Transacao(TipoOperacao.OPERACAO_SAQUE, valor, balance, this));
     }
     @Override
-    public void deposito(BigDecimal valor){
+    public Transacao deposito(BigDecimal valor){
 
         if (valor.add(tax(valor)).compareTo(new BigDecimal("5000")) > 0) {
-            throw new LimiteExcedidoException();
+            throw new LimiteExcedidoException("Limite excedido para depósito. O valor máximo permitido é R$5.000,00 (incluindo taxas).");
         }
         balance = balance.add(valor).subtract(tax(valor));
-        addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance));;
-    }
-
-    public BigDecimal getEmprestimoPers() {
-        return emprestimo;
-    }
-
-    public void setEmprestimoPers(BigDecimal emprestimo) {
-        this.emprestimo = emprestimo;
+        return addTransacao(new Transacao(TipoOperacao.OPERACAO_DEPOSITO, valor, balance, this));
     }
 
     @Override
-    public void transferencia( BigDecimal valor, Conta contaDestino) {
+    public Transacao transferencia( BigDecimal valor, Conta contaDestino) {
         if (balance.compareTo(valor.add(tax(valor))) >= 0) {
             balance = balance.subtract(valor.add(tax(valor)));
             contaDestino.creditar(valor);
 
-            addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, this.getBalance()));
-            contaDestino.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, contaDestino.getBalance()));
+            contaDestino.addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, contaDestino.getBalance(), contaDestino));
+            return addTransacao(new Transacao(TipoOperacao.OPERACAO_TRANSFERENCIA, valor, this.getBalance(), this));
         } else {
-            throw new SaldoInsuficienteException();
+            throw new SaldoInsuficienteException("Saldo insuficiente para transferência. O valor máximo permitido é R$20.000,00 (incluindo taxas).");
         }
     }
 

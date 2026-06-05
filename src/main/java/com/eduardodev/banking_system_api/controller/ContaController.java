@@ -1,6 +1,14 @@
 package com.eduardodev.banking_system_api.controller;
 
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoCorrenteRequest;
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoEmpresarialRequest;
+import com.eduardodev.banking_system_api.dtos.request.ContaDtoPoupancaRequest;
+import com.eduardodev.banking_system_api.dtos.response.ContaCorrenteDtoResponse;
+import com.eduardodev.banking_system_api.dtos.response.ContaDtoEmpresarialResponse;
+import com.eduardodev.banking_system_api.dtos.response.ContaDtoPoupancaResponse;
+import com.eduardodev.banking_system_api.dtos.response.OperacaoDTOresponse;
 import com.eduardodev.banking_system_api.entities.Conta;
+import com.eduardodev.banking_system_api.entities.ContaCorrente;
 import com.eduardodev.banking_system_api.service.AccountService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,41 +51,51 @@ public class ContaController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    @PostMapping("/insert")
-    @Operation(summary = "Inserir uma conta")
-    @ApiResponse(responseCode = "201", description = "Conta criada com sucesso")
+    @PostMapping("/insert/cc")
+    @Operation(summary = "Inserir uma conta corrente")
+    @ApiResponse(responseCode = "201", description = "Conta Corrente criada com sucesso")
     @ApiResponse(responseCode = "400", description = "Falha na criação")
-    public ResponseEntity<Conta> createAccount(@RequestBody Conta conta) {
-        Conta createdConta = accountService.createAccount(conta);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getIdConta()).toUri();
+    public ResponseEntity<ContaCorrenteDtoResponse> createAccount(@RequestBody ContaDtoCorrenteRequest conta) {
+        ContaCorrenteDtoResponse createdConta = accountService.createAccountCorrente(conta);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getId()).toUri();
+        return ResponseEntity.created(uri).body(createdConta);
+    }
+    @PostMapping("/insert/ce")
+    @Operation(summary = "Inserir uma conta empresarial")
+    @ApiResponse(responseCode = "201", description = "Conta Empresarial criada com sucesso")
+    @ApiResponse(responseCode = "400", description = "Falha na criação")
+    public ResponseEntity<ContaDtoEmpresarialResponse> createAccount(@RequestBody ContaDtoEmpresarialRequest conta) {
+        ContaDtoEmpresarialResponse createdConta = accountService.createAccountEmpresarial(conta);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getId()).toUri();
+        return ResponseEntity.created(uri).body(createdConta);
+    }
+    @PostMapping("/insert/cp")
+    @Operation(summary = "Inserir uma conta poupança")
+    @ApiResponse(responseCode = "201", description = "Conta Poupança criada com sucesso")
+    @ApiResponse(responseCode = "400", description = "Falha na criação")
+    public ResponseEntity<ContaDtoPoupancaResponse> createAccount(@RequestBody ContaDtoPoupancaRequest conta) {
+        ContaDtoPoupancaResponse createdConta = accountService.createAccountPoupanca(conta);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{id}").buildAndExpand(createdConta.getId()).toUri();
         return ResponseEntity.created(uri).body(createdConta);
     }
 
     @PutMapping(value = "/deposit/{id}")
     @Operation(summary = "Realizar um deposito em uma conta de acordo com o [ID]")
+    @ApiResponse(responseCode = "200", description = "Depósito realizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta não encontrada")
-    public ResponseEntity<Conta> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.Deposit(id, valor);
-        if (updatedConta != null) {
-            return ResponseEntity.ok().body(updatedConta);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<OperacaoDTOresponse> updateDeposito(@PathVariable Long id, @RequestBody BigDecimal valor) {
+        OperacaoDTOresponse response = accountService.Deposit(id, valor);
+            return ResponseEntity.ok().body(response);
     }
 
     @PutMapping(value = "/saque/{id}")
     @Operation(summary = "Realizar um saque em uma conta de acordo com o [ID]")
+    @ApiResponse(responseCode = "200", description = "Saque realizado com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta não encontrada")
-    public ResponseEntity<Conta> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.Saque(id, valor);
-        if (updatedConta != null) {
-            return ResponseEntity.ok().body(updatedConta);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<OperacaoDTOresponse> updateSaque(@PathVariable Long id, @RequestBody BigDecimal valor) {
+        OperacaoDTOresponse response = accountService.Saque(id, valor);
+            return ResponseEntity.ok().body(response);
     }
-
     @PutMapping(value = "/delete/{id}")
     @Operation(summary = "Deletar uma conta pelo [ID]")
     @ApiResponse(responseCode = "204", description = "Conta deletada com sucesso")
@@ -91,12 +109,8 @@ public class ContaController {
     @Operation(summary = "Realizar uma transferência com base no [ID] de uma conta [ORIGEM] para o [ID] da conta [DESTINO]")
     @ApiResponse(responseCode = "200", description = "Transferência realizada com sucesso")
     @ApiResponse(responseCode = "404", description = "Conta [DESTINO] ou [ORIGEM] não encontradas")
-    public ResponseEntity<Conta> updateTransferencia(@PathVariable Long idOrigem, @PathVariable Long idDestino, @RequestBody BigDecimal valor) {
-        Conta updatedConta = accountService.Transferencia(idOrigem, idDestino, valor);
-        if (updatedConta != null) {
-            return ResponseEntity.ok().body(updatedConta);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<OperacaoDTOresponse> updateTransferencia(@PathVariable Long idOrigem, @PathVariable Long idDestino, @RequestBody BigDecimal valor) {
+        OperacaoDTOresponse response = accountService.Transferencia(idOrigem, idDestino, valor);
+            return ResponseEntity.ok().body(response);
     }
 }

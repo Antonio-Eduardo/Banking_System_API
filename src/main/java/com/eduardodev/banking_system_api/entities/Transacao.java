@@ -1,8 +1,8 @@
 package com.eduardodev.banking_system_api.entities;
 
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
+import com.eduardodev.banking_system_api.service.converter.TipoOperacaoConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Data
@@ -23,7 +21,8 @@ public class Transacao{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long iD;
-    @Enumerated(EnumType.STRING)
+
+    @Convert(converter = TipoOperacaoConverter.class)
     private TipoOperacao tipoOperacao;
     @Column(precision = 10, scale = 2)
     private BigDecimal valor;
@@ -36,10 +35,11 @@ public class Transacao{
     @JoinColumn(name = "id_conta")
     private Conta conta;
 
-    public Transacao(TipoOperacao tipoOperacao, BigDecimal valor, BigDecimal balance) {
+    public Transacao(TipoOperacao tipoOperacao, BigDecimal valor, BigDecimal balance, Conta conta) {
         this.tipoOperacao = tipoOperacao;
         this.valor = valor;
         this.saldoApos = balance;
         this.data = Instant.now();
+        this.conta=conta;
     }
 }

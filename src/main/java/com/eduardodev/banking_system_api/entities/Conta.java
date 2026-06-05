@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,20 +29,32 @@ public abstract class Conta {
     @Column(precision = 10, scale = 2)
     protected BigDecimal balance;
 
+    @Column(name = "ativa")
+    private boolean ativa;
+
+    @Column(name = "data_abertura")
+    private LocalDate dataAbertura;
+
+    @Column(name = "numero_conta")
+    private String numeroConta;
+
+    @Column(name = "agencia")
+    private String agencia;
 
     @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transacao> historicoTransacoes = new ArrayList<>();
 
-    public void addTransacao(Transacao transacao){
+    public Transacao addTransacao(Transacao transacao){
         transacao.setConta(this);
         historicoTransacoes.add(transacao);
+        return transacao;
     }
 
-    public abstract void sacar(BigDecimal valor);
-    public abstract void deposito(BigDecimal valor);
-    public abstract void transferencia(BigDecimal valor, Conta contaDestino);
+    public abstract Transacao sacar(BigDecimal valor);
+    public abstract Transacao deposito(BigDecimal valor);
+    public abstract Transacao transferencia(BigDecimal valor, Conta contaDestino);
 
     @JsonIgnore
     public Transacao getUltimaTransacao() {

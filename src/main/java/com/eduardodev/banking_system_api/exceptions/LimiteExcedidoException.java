@@ -2,9 +2,9 @@ package com.eduardodev.banking_system_api.exceptions;
 
 import com.eduardodev.banking_system_api.enums.ErrorCode;
 
-public class LimiteExcedidoException extends NegocioException {
+public class LimiteExcedidoException extends RuntimeException {
 
-    public LimiteExcedidoException() {
-        super(ErrorCode.LIMITE_EXCEDIDO, "Valor excedeu o limite permitido");
+   public LimiteExcedidoException(String message) {
+        super(message);
     }
 }
