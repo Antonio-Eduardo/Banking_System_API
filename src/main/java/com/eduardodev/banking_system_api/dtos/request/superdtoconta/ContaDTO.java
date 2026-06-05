@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class ContaDTO {
-    public String Titular;
+    public String titular;
     public BigDecimal balance;
     public boolean ativa;
     public LocalDate dataAbertura;
