@@ -79,8 +79,8 @@ public class AccountService {
     public OperacaoDTOresponse Saque(Long id, BigDecimal amount) {
         Conta existingConta = accountRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
+        Transacao transacao = existingConta.sacar(amount);
         Conta conta = accountRepository.save(existingConta);
-            Transacao transacao = existingConta.sacar(amount);
             return convert.toOperationResponse(conta,transacao);
 
         }

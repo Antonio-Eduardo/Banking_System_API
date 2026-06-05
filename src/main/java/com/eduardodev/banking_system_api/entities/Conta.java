@@ -22,7 +22,7 @@ import java.util.Objects;
 @JsonPropertyOrder({"titular", "idConta", "balance", "historicoTransacoes"})
 public abstract class Conta {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idConta;
 
     private String titular;
