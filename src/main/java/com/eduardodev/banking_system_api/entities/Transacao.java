@@ -1,9 +1,8 @@
 package com.eduardodev.banking_system_api.entities;
 
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
-import com.eduardodev.banking_system_api.enums.converter.TipoOperacaoConverter;
+import com.eduardodev.banking_system_api.service.converter.TipoOperacaoConverter;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Data

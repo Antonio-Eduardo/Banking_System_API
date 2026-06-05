@@ -11,6 +11,7 @@ import com.eduardodev.banking_system_api.dtos.response.OperacaoDTOresponse;
 import com.eduardodev.banking_system_api.entities.*;
 import com.eduardodev.banking_system_api.exceptions.ResourceNotFoundException;
 import com.eduardodev.banking_system_api.repository.AccountRepository;
+import com.eduardodev.banking_system_api.service.converter.ContaConverter;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,25 +28,27 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private ContaConverter convert;
 
     @Transactional
     public ContaCorrenteDtoResponse createAccountCorrente(ContaDtoCorrenteRequest contaDTOrequest) {
-        ContaCorrente conta = toEntityCC(contaDTOrequest);
+        ContaCorrente conta = convert.toEntityCC(contaDTOrequest);
          ContaCorrente savedConta = accountRepository.save(conta);
-        return toResponseCC(savedConta);
+        return convert.toResponseCC(savedConta);
 
     }
     @Transactional
     public ContaDtoPoupancaResponse createAccountPoupanca(ContaDtoPoupancaRequest contaDTOrequest) {
-        ContaPoupanca conta = toEntityCP(contaDTOrequest);
+        ContaPoupanca conta = convert.toEntityCP(contaDTOrequest);
         ContaPoupanca savedConta =accountRepository.save(conta);
-        return toResponseCP(savedConta);
+        return convert.toResponseCP(savedConta);
     }
     @Transactional
     public ContaDtoEmpresarialResponse createAccountEmpresarial(ContaDtoEmpresarialRequest contaDTOrequest) {
-        ContaEmpresarial conta = toEntityCE(contaDTOrequest);
+        ContaEmpresarial conta = convert.toEntityCE(contaDTOrequest);
         ContaEmpresarial savedConta = accountRepository.save(conta);
-        return toResponseCE(savedConta);
+        return convert.toResponseCE(savedConta);
     }
 
     @Transactional
@@ -70,7 +73,7 @@ public class AccountService {
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
             Transacao transacao = existingConta.deposito(amount);
             Conta savedAccount = accountRepository.save(existingConta);
-            return toOperationResponse(savedAccount,transacao);
+            return convert.toOperationResponse(savedAccount,transacao);
     }
     @Transactional
     public OperacaoDTOresponse Saque(Long id, BigDecimal amount) {
@@ -78,7 +81,7 @@ public class AccountService {
                 () -> new ResourceNotFoundException("Conta não encontrada com id: " + id));
         Conta conta = accountRepository.save(existingConta);
             Transacao transacao = existingConta.sacar(amount);
-            return toOperationResponse(conta,transacao);
+            return convert.toOperationResponse(conta,transacao);
 
         }
     @Transactional
@@ -91,91 +94,7 @@ public class AccountService {
             contaDestino.deposito(amount);
             Conta savedContaOrigem = accountRepository.save(contaOrigem);
             accountRepository.save(contaDestino);
-            return toOperationResponse(savedContaOrigem,transacao);
+            return convert.toOperationResponse(savedContaOrigem,transacao);
     }
-    public ContaCorrenteDtoResponse toResponseCC(ContaCorrente contaRequest){
-       ContaCorrenteDtoResponse contaCorrenteDtoResponse = new ContaCorrenteDtoResponse();
-       contaCorrenteDtoResponse.setId(contaRequest.getIdConta());
-       contaCorrenteDtoResponse.setTitular(contaRequest.getTitular());
-       contaCorrenteDtoResponse.setBalance(contaRequest.getBalance());
-       contaCorrenteDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
-       contaCorrenteDtoResponse.setAtiva(contaRequest.isAtiva());
-       contaCorrenteDtoResponse.setDataAbertura(contaRequest.getDataAbertura());
-       contaCorrenteDtoResponse.setAgencia(contaRequest.getAgencia());
-       contaCorrenteDtoResponse.setLimiteChequeEspecial(contaRequest.getLimiteChequeEspecial());
-       return contaCorrenteDtoResponse;
-    }
-    public ContaDtoEmpresarialResponse toResponseCE(ContaEmpresarial contaRequest){
-        ContaDtoEmpresarialResponse contaEmpresarialDtoResponse = new ContaDtoEmpresarialResponse();
-        contaEmpresarialDtoResponse.setId(contaRequest.getIdConta());
-        contaEmpresarialDtoResponse.setTitular(contaRequest.getTitular());
-        contaEmpresarialDtoResponse.setBalance(contaRequest.getBalance());
-        contaEmpresarialDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
-        contaEmpresarialDtoResponse.setAtiva(contaRequest.isAtiva());
-        contaEmpresarialDtoResponse.setDataAbertura(contaRequest.getDataAbertura());
-        contaEmpresarialDtoResponse.setAgencia(contaRequest.getAgencia());
-        contaEmpresarialDtoResponse.setRazaoSocial(contaRequest.getRazaoSocial());
-        contaEmpresarialDtoResponse.setCnpj(contaRequest.getCnpj());
-        contaEmpresarialDtoResponse.setEmprestimo(contaRequest.getEmprestimo());
-        return contaEmpresarialDtoResponse;
-    }
-    public ContaDtoPoupancaResponse toResponseCP(ContaPoupanca contaRequest){
-        ContaDtoPoupancaResponse contaPoupancaDtoResponse = new ContaDtoPoupancaResponse();
-        contaPoupancaDtoResponse.setId(contaRequest.getIdConta());
-        contaPoupancaDtoResponse.setTitular(contaRequest.getTitular());
-        contaPoupancaDtoResponse.setBalance(contaRequest.getBalance());
-        contaPoupancaDtoResponse.setNumeroConta(contaRequest.getNumeroConta());
-        contaPoupancaDtoResponse.setAtiva(contaRequest.isAtiva());
-        contaPoupancaDtoResponse.setDataAbertura(contaRequest.getDataAbertura());
-        contaPoupancaDtoResponse.setAgencia(contaRequest.getAgencia());
-        contaPoupancaDtoResponse.setDataAniversario(contaRequest.getDataAniversario());
-        return contaPoupancaDtoResponse;
-    }
-    public ContaEmpresarial toEntityCE(ContaDtoEmpresarialRequest conta) {
-        ContaEmpresarial contaEmpresarial = new ContaEmpresarial();
-        contaEmpresarial.setTitular(conta.getTitular());
-        contaEmpresarial.setBalance(conta.getBalance());
-        contaEmpresarial.setNumeroConta(conta.getNumeroConta());
-        contaEmpresarial.setAtiva(conta.isAtiva());
-        contaEmpresarial.setDataAbertura(conta.getDataAbertura());
-        contaEmpresarial.setAgencia(conta.getAgencia());
-        contaEmpresarial.setRazaoSocial(conta.getRazaoSocial());
-        contaEmpresarial.setCnpj(conta.getCnpj());
-        contaEmpresarial.setEmprestimo(conta.getEmprestimo());
-        return contaEmpresarial;
-    }
-    public ContaPoupanca toEntityCP(ContaDtoPoupancaRequest conta) {
-        ContaPoupanca contaPoupanca = new ContaPoupanca();
-        contaPoupanca.setTitular(conta.getTitular());
-        contaPoupanca.setBalance(conta.getBalance());
-        contaPoupanca.setNumeroConta(conta.getNumeroConta());
-        contaPoupanca.setAtiva(conta.isAtiva());
-        contaPoupanca.setDataAbertura(conta.getDataAbertura());
-        contaPoupanca.setAgencia(conta.getAgencia());
-        contaPoupanca.setDataAniversario(conta.getDataAniversario());
-        return contaPoupanca;
-    }
-    public ContaCorrente toEntityCC(ContaDtoCorrenteRequest conta) {
-        ContaCorrente contaCorrente = new ContaCorrente();
-        contaCorrente.setTitular(conta.getTitular());
-        contaCorrente.setBalance(conta.getBalance());
-        contaCorrente.setNumeroConta(conta.getNumeroConta());
-        contaCorrente.setAtiva(conta.isAtiva());
-        contaCorrente.setDataAbertura(conta.getDataAbertura());
-        contaCorrente.setAgencia(conta.getAgencia());
-        contaCorrente.setLimiteChequeEspecial(conta.getLimiteChequeEspecial());
-        return contaCorrente;
-    }
-    public OperacaoDTOresponse toOperationResponse (Conta conta, Transacao transacao){
-        OperacaoDTOresponse operacaoDTOresponse = new OperacaoDTOresponse();
-        operacaoDTOresponse.setId(conta.getIdConta());
-        operacaoDTOresponse.setTitular(conta.getTitular());
-        operacaoDTOresponse.setSaldoApos(conta.getBalance());
-        operacaoDTOresponse.setDataHora(Instant.now());
-        operacaoDTOresponse.setNumeroConta(conta.getNumeroConta());
-        operacaoDTOresponse.setAgencia(conta.getAgencia());
-        operacaoDTOresponse.setValorOperacao(transacao.getValor());
-        operacaoDTOresponse.setTipoOperacao(transacao.getTipoOperacao().getValue());
-        return operacaoDTOresponse;
-    }
+
 }

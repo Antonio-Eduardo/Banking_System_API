@@ -1,4 +1,4 @@
-package com.eduardodev.banking_system_api.enums.converter;
+package com.eduardodev.banking_system_api.service.converter;
 
 import com.eduardodev.banking_system_api.enums.TipoOperacao;
 import jakarta.persistence.AttributeConverter;
