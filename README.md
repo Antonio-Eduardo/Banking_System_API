@@ -32,7 +32,7 @@
 
 O **Banking System API** é uma API REST para operações bancárias com três tipos de conta — Corrente, Poupança e Empresarial — cada um com regras de negócio distintas. Todas as operações financeiras usam `BigDecimal` com arredondamento `HALF_EVEN` para precisão financeira. O controle transacional é gerenciado pelo Spring via `@Transactional`, com rollback automático em caso de exceção.
 
-A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo — cada tipo implementa suas próprias regras de taxa, limite e operação.
+A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo — cada tipo implementa suas próprias regras de taxa, limite e operação através de métodos abstratos definidos na superclasse `Conta`.
 
 ---
 
@@ -49,13 +49,15 @@ A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo �
 
 ## Funcionalidades
 
-- [x] Criação de contas via endpoint REST (Corrente, Poupança, Empresarial)
+- [x] Criação de contas via endpoints REST separados por tipo (Corrente, Poupança, Empresarial)
 - [x] Depósito com aplicação de taxa por tipo de conta
 - [x] Saque com validação de saldo e limites por tipo de conta
 - [x] Transferência entre contas com débito na origem e crédito no destino
 - [x] Histórico de transações bidirecional por conta (`@OneToMany`)
 - [x] Rendimento automático na conta poupança (`getRendimento()`)
-- [x] Hierarquia de exceções com `ErrorCode` enum
+- [x] Hierarquia de exceções com `ErrorCode` enum e tratamento global via `@RestControllerAdvice`
+- [x] Documentação interativa com Swagger/OpenAPI
+- [x] Controle de schema com Flyway (migrations versionadas)
 - [x] Seed de dados automático no perfil `dev` via `CommandLineRunner`
 - [x] 13 testes de integração com Testcontainers (PostgreSQL real em container)
 
@@ -71,8 +73,10 @@ A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo �
 | Spring Validation | — | Validação de dados de entrada |
 | Hibernate | — | ORM, estratégia `SINGLE_TABLE` |
 | PostgreSQL | 16 | Banco de dados |
+| Flyway | — | Controle de migrations de banco |
 | Docker | — | Container do banco de dados (dev) |
 | Testcontainers | 1.19.8 | PostgreSQL real nos testes de integração |
+| SpringDoc OpenAPI | 2.8.8 | Documentação interativa (Swagger UI) |
 | Lombok | — | Redução de boilerplate |
 | Maven | — | Gerenciamento de dependências |
 
@@ -80,7 +84,8 @@ A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo �
 
 ## Endpoints
 
-> Base URL em produção: `https://bankingsystemapi-production.up.railway.app`
+> Base URL em produção: `https://bankingsystemapi-production.up.railway.app`  
+> Documentação interativa: `https://bankingsystemapi-production.up.railway.app/swagger-ui/index.html`
 
 ### Contas — `/accounts`
 
@@ -88,7 +93,9 @@ A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo �
 |--------|----------|-----------|
 | GET | `/accounts` | Lista todas as contas |
 | GET | `/accounts/{id}` | Busca uma conta por ID |
-| POST | `/accounts` | Cria uma nova conta |
+| POST | `/accounts/insert/cc` | Cria uma conta corrente |
+| POST | `/accounts/insert/ce` | Cria uma conta empresarial |
+| POST | `/accounts/insert/cp` | Cria uma conta poupança |
 | PUT | `/accounts/deposit/{id}` | Realiza um depósito |
 | PUT | `/accounts/saque/{id}` | Realiza um saque |
 | PUT | `/accounts/transf/{idOrigem}/{idDestino}` | Transferência entre contas |
@@ -101,16 +108,20 @@ A hierarquia de contas é modelada com herança `SINGLE_TABLE` e polimorfismo �
 | GET | `/transactions` | Lista todas as transações |
 | GET | `/transactions/{id}` | Busca uma transação por ID |
 
-### Exemplo de requisição
+### Exemplos de requisição
 
 ```http
-POST /accounts
+POST /accounts/insert/cc
 Content-Type: application/json
 
 {
   "titular": "João Silva",
-  "saldo": 1000.00,
-  "tipo": "CORRENTE"
+  "balance": 1000.00,
+  "ativa": true,
+  "dataAbertura": "2024-01-15",
+  "agencia": "0001",
+  "numeroConta": "12345-6",
+  "limiteChequeEspecial": 500.00
 }
 ```
 
@@ -118,9 +129,7 @@ Content-Type: application/json
 PUT /accounts/deposit/1
 Content-Type: application/json
 
-{
-  "valor": 500.00
-}
+500.00
 ```
 
 ---
@@ -136,7 +145,7 @@ Content-Type: application/json
 ### Conta Poupança
 - Taxa de **2%** em todas as operações
 - Limite máximo por depósito: **R$ 10.000,00**
-- Rendimento de **0,8%** sobre o saldo atual
+- Rendimento de **0,8%** sobre o saldo atual via `getRendimento()`
 
 ### Conta Empresarial
 - Taxa de **2%** em todas as operações
@@ -146,22 +155,26 @@ Content-Type: application/json
 
 ### Geral
 - `BigDecimal` com escala 2 e arredondamento `HALF_EVEN` em todas as operações
-- Cada operação registra uma `Transacao` com tipo, valor, saldo pós-operação e timestamp
+- Cada operação registra uma `Transacao` com tipo (convertido para `INTEGER` via `AttributeConverter`), valor, saldo pós-operação e timestamp
 - Transferências registram transação em **ambas** as contas
 - Rollback automático via `@Transactional` em `RuntimeException`
+- Exceções tratadas globalmente com `@RestControllerAdvice` retornando `StandartError` com timestamp, status e mensagem
 
 ---
 
 ## Conceitos Aplicados
 
 - Herança com `@Inheritance(strategy = SINGLE_TABLE)` e polimorfismo
-- Abstração (`Conta` abstrata com métodos abstratos por tipo)
-- Interfaces (`Tax`, `OperacaoBanco`) para separação de contratos
+- Abstração (`Conta` abstrata com métodos abstratos `sacar`, `deposito`, `transferencia`)
+- Interface `Tax` para contrato de cálculo de taxa por tipo de conta
+- `AttributeConverter` para persistir `TipoOperacao` como `INTEGER` no banco
 - Injeção de dependência via Spring IoC
-- Separação de responsabilidades: Controller → Service → Repository → Entity
-- Histórico bidirecional de transações com `@OneToMany`
+- Separação de responsabilidades: Controller → Service → Converter → Repository → Entity
+- Histórico bidirecional de transações com `@OneToMany` / `@ManyToOne`
+- DTOs com herança (`ContaDTO` base, subclasses por tipo) para evitar campos nulos
+- Tratamento centralizado de exceções com `@RestControllerAdvice`
 - Seed de dados com `CommandLineRunner` no perfil `dev`
-- Testes de integração com `@SpringBootTest`, `@ActiveProfiles`, Testcontainers
+- Testes de integração com `@SpringBootTest`, `@ActiveProfiles("test")`, Testcontainers
 
 ---
 
@@ -190,7 +203,7 @@ docker run --name banking-postgres \
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-A API estará disponível em `http://localhost:8081`.
+A API estará disponível em `http://localhost:8081` e o Swagger em `http://localhost:8081/swagger-ui/index.html`.
 
 ---
 
@@ -216,7 +229,6 @@ mvn test
 
 ## Melhorias Futuras
 
-- [ ] Tratamento global de exceções com `@ControllerAdvice`
-- [ ] Documentação com Swagger/OpenAPI
-- [ ] Autenticação com Spring Security
+- [ ] Autenticação e autorização com Spring Security + JWT
 - [ ] Paginação nos endpoints de listagem
+- [ ] Endpoint para rendimento da poupança
